@@ -12,19 +12,71 @@
 
 </head>
 
+
 <body>
     <h1>Consumes Deck of Cards API</h1>
+    <div id="deckHere"></div>
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+
+    <script>
+        $(document).ready(function () {
+            let baseUrl = "https://deckofcardsapi.com/api/"
+
+            const ACTIONS = {
+                SHUFFLE_DECK: "deck/new/shuffle/"
+            }
+
+            // registra os eventos globais
+            $(document).bind('ajaxStart', function (event) {
+                console.info(`Vai iniciar ajax ${event.type}`)
+                // meter aqui um loading massa
+            })
+
+            $(document).bind('ajaxComplete', function (event, jqXHR, settings) {
+                console.info(`Finalizado ajax ${event.type} >> ${settings.url}`)
+                // esconder o loading
+            })
+
+            function consumeDeckApi(action, paramsObj) {
+                let myUrl = baseUrl + action
+                console.info(myUrl)                
+                return $.ajax({
+                        url  : myUrl,
+                        type : 'GET',
+                        data : paramsObj
+                    })
+            }
+
+            function showDeckId(id){
+                let str = $('<p>' + id + '</p>')
+                $('#deckHere').html(str)
+            }
+
+            consumeDeckApi(ACTIONS.SHUFFLE_DECK, { deck_count: 4})
+                .done(function (data, textStatus, jqXHR) {
+                    console.info(data, textStatus)
+                    showDeckId(JSON.stringify(data))
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    console.error(jqXHR, textStatus, errorThrown)
+                    showDeckId(textStatus)
+                })
+        });
+
+
+        
+
+    </script>
 
 </body>
 
