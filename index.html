@@ -28,6 +28,9 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pubsub-js/1.7.0/pubsub.min.js"
+        integrity="sha256-QF0bsKIv/J8eC1vj+f/xSmLSME+ztgCsUVYSR6hdHjE=" crossorigin="anonymous"></script>
+
     <script>
         $(document).ready(function () {
             let baseUrl = "https://deckofcardsapi.com/api/"
@@ -49,20 +52,20 @@
 
             function consumeDeckApi(action, paramsObj) {
                 let myUrl = baseUrl + action
-                console.info(myUrl)                
+                console.info(myUrl)
                 return $.ajax({
-                        url  : myUrl,
-                        type : 'GET',
-                        data : paramsObj
-                    })
+                    url: myUrl,
+                    type: 'GET',
+                    data: paramsObj
+                })
             }
 
-            function showDeckId(id){
+            function showDeckId(id) {
                 let str = $('<p>' + id + '</p>')
                 $('#deckHere').html(str)
             }
 
-            consumeDeckApi(ACTIONS.SHUFFLE_DECK, { deck_count: 4})
+            consumeDeckApi(ACTIONS.SHUFFLE_DECK, { deck_count: 4 })
                 .done(function (data, textStatus, jqXHR) {
                     console.info(data, textStatus)
                     showDeckId(JSON.stringify(data))
@@ -74,7 +77,7 @@
         });
 
 
-        
+
 
     </script>
 
