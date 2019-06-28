@@ -1,0 +1,184 @@
+html, body {
+    margin:0;
+    height: 100%;
+}
+
+.grid {
+    width: 100%;
+    height: 100%;
+    /*flex: 1 1 auto;
+    flex-direction: column;*/
+
+
+    /*padding: 30px 30px 30px 30px;*/
+
+    margin:0 0;
+    /*background-color: aqua;*/
+    background: url(poker-table-felt.jpg);
+    background-repeat: repeat;
+    /*background-size: 100% 100%;*/
+}
+  
+.list {
+    height: 100%;
+    position: relative;
+    list-style-type:none;
+    padding-left:0;
+    margin: 0;
+}
+  
+.imgCarta {
+    width:100px;
+    height:150px;
+}
+
+.card {
+
+    transition: all 0.5s cubic-bezier(0.68,-.55,.265,1.55);
+    
+    perspective: 1000;
+    -ms-transform: perspective(1000px);
+    -moz-transform: perspective(1000px);
+    -ms-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    
+    float: left;
+    width: 100px;
+    height: 150px;
+    
+    position: absolute;
+    right: calc(calc(100%/2) - calc(100px/2));
+    bottom: calc(calc(100%/2) - calc(150px/2));
+    margin: 0px 0px 0px 0px;
+}
+
+.card:nth-child(10n) .flip-card-inner {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
+}
+
+.card.deck1 {
+    right: calc(calc(calc(100%/2) - calc(100px/2)) + 30);
+    bottom: calc(calc(calc(100%/2) - calc(150px/2)));
+    z-index: 10;
+}
+
+.card.deck2 {
+    right: calc(calc(calc(100%/2) - calc(100px/2)) - 30px);
+    bottom: calc(calc(calc(100%/2) - calc(150px/2)) - 10px);
+    z-index: 12;
+}
+
+.card.deck3 {
+    right: calc(calc(calc(100%/2) - calc(100px/2)) + 30px);
+    bottom: calc(calc(calc(100%/2) - calc(150px/2)) + 10px);
+    z-index: 15;
+}
+    
+.card.ani0 {
+        right: calc(calc(calc(100%/2) - calc(100px/2)) + calc(120px*2));
+        bottom: calc(calc(calc(100%/2) - calc(150px/2)) + calc(300px/2));
+}
+    
+.card.ani1 {
+        right: calc(calc(calc(100%/2) - calc(100px/2)) + calc(120px*1));
+        bottom: calc(calc(calc(100%/2) - calc(150px/2)) + calc(300px/2));
+}
+    
+.card.ani2 {
+        right: calc(calc(calc(100%/2) - calc(100px/2)));
+        bottom: calc(calc(calc(100%/2) - calc(150px/2)) + calc(300px/2));
+}
+    
+.card.ani3 {
+        right: calc(calc(calc(100%/2) - calc(100px/2)) - calc(120px*1));
+        bottom: calc(calc(calc(100%/2) - calc(150px/2)) + calc(300px/2));
+}
+    
+.card.ani4 {
+        right: calc(calc(calc(100%/2) - calc(100px/2)) - calc(120px*2));
+        bottom: calc(calc(calc(100%/2) - calc(150px/2)) + calc(300px/2));
+}
+    
+.card.ani5 {
+        right: calc(calc(calc(100%/2) - calc(100px/2)) + calc(120px*2));
+        bottom: calc(calc(calc(100%/2) - calc(150px/2)) - calc(50px/2));
+}
+    
+.card.ani6 {
+        right: calc(calc(calc(100%/2) - calc(100px/2)) + calc(120px*1));
+        bottom: calc(calc(calc(100%/2) - calc(150px/2)) - calc(50px/2));
+}
+    
+.card.ani7 {
+        right: calc(calc(calc(100%/2) - calc(100px/2)));
+        bottom: calc(calc(calc(100%/2) - calc(150px/2)) - calc(50px/2));
+}
+    
+.card.ani8 {
+     right: calc(calc(calc(100%/2) - calc(100px/2)) - calc(120px*1));
+     bottom: calc(calc(calc(100%/2) - calc(150px/2)) - calc(50px/2));
+}
+
+.card.ani9 {
+    right: calc(calc(calc(100%/2) - calc(100px/2)) - calc(120px*2));
+    bottom: calc(calc(calc(100%/2) - calc(150px/2)) - calc(50px/2));
+}
+  
+
+
+
+
+
+.flip-card {
+  background-color: transparent;
+  width: 100px;
+  height: 150px;
+  /*border: 1px solid #f1f1f1;*/
+  perspective: 1000px; 
+}
+
+.card.ani0 .flip-card-inner,
+.card.ani1 .flip-card-inner,
+.card.ani2 .flip-card-inner,
+.card.ani3 .flip-card-inner,
+.card.ani4 .flip-card-inner,
+.card.ani5 .flip-card-inner,
+.card.ani6 .flip-card-inner,
+.card.ani7 .flip-card-inner,
+.card.ani8 .flip-card-inner
+ {
+
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
+
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.flip-card-desvirada .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.flip-card-front {
+  background-color: #bbb;
+  color: black;
+}
+
+.flip-card-back {
+  background-color: dodgerblue;
+  color: white;
+  transform: rotateY(180deg);
+}
