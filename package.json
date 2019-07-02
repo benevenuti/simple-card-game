@@ -4,8 +4,7 @@
   "description": "Consumes Deck of Cards API",
   "main": "index.js",
   "scripts": {
-    "dev": "http-server ",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "http-server"    
   },
   "repository": {
     "type": "git",
