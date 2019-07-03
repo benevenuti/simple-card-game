@@ -5,6 +5,8 @@ class View {
         this.cardContainer = $(cardContainerId)
         this.cards = []
 
+        $.subscribe("model.initialShuffle", this.shuffle.bind(this))
+
         this.init(cardCount)
         this.buttonBindregister(this)
     }
@@ -31,9 +33,9 @@ class View {
         });
     }
 
-    geraCard() {
+    geraCard(indice) {
         console.info("generate card")
-        return $("<li>").addClass("card")
+        return $("<li>").addClass("card").data("indice", indice)
             .append($("<div>").addClass("flip-card")
                 .append($("<div>").addClass("flip-card-inner")
                     .append($("<div>").addClass("flip-card-front")
@@ -44,11 +46,15 @@ class View {
                         .append($("<img>").addClass("imgCarta")
                             .attr("src", "https://deckofcardsapi.com/static/img/AS.png")
                             .attr("alt", "Carta Frente")))))
+            .click(function (e) {
+                $.publish('view.clickCarta', e)
+            })
     }
+
     init(qtd) {
         console.info("init")
-        ' '.repeat(qtd - 1).split(' ').forEach(function (o) {
-            this.cards.push(this.geraCard())
+        ' '.repeat(qtd - 1).split(' ').forEach(function (o, i) {
+            this.cards.push(this.geraCard(i))
         }.bind(this))
         console.info("cards.length: " + this.cards.length)
         this.cardContainer.append(this.cards)
