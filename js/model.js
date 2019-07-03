@@ -9,7 +9,7 @@ class Model {
     //The value, one of A (for an ace), 2, 3, 4, 5, 6, 7, 8, 9, 0 (for a ten), J (jack), Q (queen), or K (king);
     get CARDS() { return ["A", "2", "3", "4", "5", "6", "7", "8", "9", "0", "J", "Q", "K"] }
     //The suit, one of S (Spades), D (Diamonds), C (Clubs), or H (Hearts).
-    get SUITS() { return ["S", "D", "C", "H  "] }
+    get SUITS() { return ["S", "D", "C", "H"] }
 
     get DECK_SELECTION() { 
         return [
@@ -18,19 +18,16 @@ class Model {
             this.CARDS[0] + this.SUITS[1],
             this.CARDS[0] + this.SUITS[2],
             this.CARDS[0] + this.SUITS[3],
-
             // J
             this.CARDS[10] + this.SUITS[0],
             this.CARDS[10] + this.SUITS[1],
             this.CARDS[10] + this.SUITS[2],
             this.CARDS[10] + this.SUITS[3],
-
             // Q
             this.CARDS[11] + this.SUITS[0],
             this.CARDS[11] + this.SUITS[1],
             this.CARDS[11] + this.SUITS[2],
             this.CARDS[11] + this.SUITS[3],
-
             // K
             this.CARDS[12] + this.SUITS[0],
             this.CARDS[12] + this.SUITS[1],
@@ -70,7 +67,6 @@ class Model {
 
     consumeDeckApi(action, paramsObj) {
         let myUrl = this.baseUrl + action
-        console.info(myUrl)
         return $.ajax({
             url: myUrl,
             type: 'GET',
