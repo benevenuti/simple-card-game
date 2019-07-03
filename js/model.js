@@ -55,7 +55,7 @@ class Model {
         //The suit, one of S (Spades), D (Diamonds), C (Clubs), or H (Hearts).
 
         // teste do caceta
-        this.consumeDeckApi(this.ACTIONS.SHUFFLE_DECK, { deck_count: 1, cards: this.DECK_SELECTION })
+        this.consumeDeckApi(this.ACTIONS.SHUFFLE_DECK, { deck_count: 2, cards: this.DECK_SELECTION.join(",") })
             .done(function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
                 $.publish('model.initialShuffle', JSON.stringify(data))
