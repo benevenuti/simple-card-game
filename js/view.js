@@ -3,9 +3,12 @@ class View {
         console.info(`view construido`)
 
         this.cardContainer = $(cardContainerId)
-        this.cards = []
+        this.cards = []        
 
-        $.subscribe("model.initialShuffle", this.shuffle.bind(this))
+        //$.subscribe("model.initialShuffle", this.shuffle.bind(this))
+
+        $.subscribe("view.clickCarta", this.clickCarta.bind(this)) // vai mudar para op controller
+        $.subscribe("view.notify", this.notify.bind(this))
 
         this.init(cardCount)
         this.buttonBindregister(this)
@@ -36,19 +39,39 @@ class View {
     geraCard(indice) {
         console.info("generate card")
         return $("<li>").addClass("card").data("indice", indice)
+            .attr("data-indice", indice)
             .append($("<div>").addClass("flip-card")
                 .append($("<div>").addClass("flip-card-inner")
                     .append($("<div>").addClass("flip-card-front")
                         .append($("<img>").addClass("imgCarta")
+
                             .attr("src", "card-back-orange.png")
                             .attr("alt", "Carta Fundo")))
                     .append($("<div>").addClass("flip-card-back")
                         .append($("<img>").addClass("imgCarta")
+
                             .attr("src", "https://deckofcardsapi.com/static/img/AS.png")
                             .attr("alt", "Carta Frente")))))
             .click(function (e) {
-                $.publish('view.clickCarta', e)
+                $.publish('view.clickCarta', { event: e, target: this })
             })
+    }
+
+    clickCarta(event, param) {
+        console.log('view.clickCarta', event, param)
+        this.toggleFlip($(param.target))
+    }
+
+    toggleFlip(target) {
+        setTimeout(function () {
+            if (target.hasClass("flip-card-desvirada")) {
+                target.removeClass("flip-card-desvirada")
+                $.publish('view.cartaVirada', target)
+            } else {
+                target.addClass("flip-card-desvirada")
+                $.publish('view.cartaDesvirada', target)
+            }
+        }, 10)
     }
 
     init(qtd) {
@@ -74,6 +97,8 @@ class View {
                 o.removeClass("p1")
                 o.removeClass("p2")
                 o.addClass("ani" + e)
+                $.publish("view.spreadDone")
+                console.info("spread done")
             }, e * 150)
         })
     }
@@ -82,9 +107,9 @@ class View {
         this.cards.forEach(function (o, e) {
             setTimeout(function () {
                 o.removeClass("ani" + e)
-                if(e%2 == 0)
+                if (e % 2 == 0)
                     o.addClass("p1")
-                else 
+                else
                     o.addClass("p2")
             }, e * 150)
         })
@@ -100,10 +125,12 @@ class View {
                 o.addClass("deck" + deck)
                 setTimeout(function () {
                     o.removeClass("deck" + deck)
+                    //$.publish('view.shuffleDone', e)
                 }, e * 100)
             }, e * 100)
         })
     }
+
     toogleFlipAll() {
         this.cards.forEach(function (o, e) {
             setTimeout(function () {
@@ -116,7 +143,8 @@ class View {
     }
 
     notify(model) {
-
+        // if mesa virada == null 
+        // shuffle
     }
 
     showDeckId(id) {
