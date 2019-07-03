@@ -30,23 +30,23 @@ class Controller {
     }
 
     addToMesaVirada() {
-        $.publish("controller.addToMesaVirada", this.addToMesaVirada.bind(this));
+        $.publish("controller.addToMesaVirada", {publish: "model.initialShuffle"});
     }
 
     addToP1() {
-        $.publish("controller.addToP1", this.addToP1.bind(this));
+        $.publish("controller.addToP1", {publish: "model.initialShuffle"});
     }
 
     addToP2() {
-        $.publish("controller.addToP2", this.addToP2.bind(this));
+        $.publish("controller.addToP2", {publish: "model.initialShuffle"});
     }
 
     addToVez() {
-        $.publish("controller.addToVez", this.addToVez.bind(this));
+        $.publish("controller.addToVez", {publish: "model.initialShuffle"});
     }
 
     draw() {
-        $.publish("controller.draw", this.draw.bind(this));
+        $.publish("controller.draw", {publish: "model.initialShuffle"});
     }
 
     

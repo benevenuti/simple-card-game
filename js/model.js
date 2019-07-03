@@ -209,6 +209,12 @@ class Model {
             })
     }
 
+    // TODO: LIST P1 PILE TO UPDATE MODEL
+    // TODO: LIST P2 PILE TO UPDATE MODEL
+    // TODO: LIST VEZ PILE TO UPDATE MODEL
+    // TODO: LIST MESAVIRADA PILE TO UPDATE MODEL
+    // TODO: LIST MESADESVIRADA PILE TO UPDATE MODEL
+
 
     consumeDeckApi(action, paramsObj) {
         let myUrl = this.baseUrl + action
