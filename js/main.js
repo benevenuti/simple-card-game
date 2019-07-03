@@ -10,7 +10,8 @@ function iniciarSimpleCardGame() {
     })
 
     $(document).bind('ajaxComplete', function (event, jqXHR, settings) {
-        console.info(`Finalizado ajax ${event.type} >> ${settings.url}`)
+
+        console.info(`Finalizado ajax ${event.type} >> ${decodeURI(settings.url)}`)
         // esconder o loading
     })
 
