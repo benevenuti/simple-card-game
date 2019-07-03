@@ -1,41 +1,43 @@
 class Model {
 
-    ACTIONS = {
-        SHUFFLE_DECK: "deck/new/shuffle/"
+    get ACTIONS() {
+        return { SHUFFLE_DECK: "deck/new/shuffle/" }
     }
 
-    baseUrl = "https://deckofcardsapi.com/api/"
+    get baseUrl() { return "https://deckofcardsapi.com/api/" }
 
     //The value, one of A (for an ace), 2, 3, 4, 5, 6, 7, 8, 9, 0 (for a ten), J (jack), Q (queen), or K (king);
-    CARDS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "0", "J", "Q", "K"]
+    get CARDS() { return ["A", "2", "3", "4", "5", "6", "7", "8", "9", "0", "J", "Q", "K"] }
     //The suit, one of S (Spades), D (Diamonds), C (Clubs), or H (Hearts).
-    SUITS = ["S", "D", "C", "H  "]
+    get SUITS() { return ["S", "D", "C", "H  "] }
 
-    DECK_SELECTION = [
-        // A
-        this.CARDS[0] + this.SUITS[0],
-        this.CARDS[0] + this.SUITS[1],
-        this.CARDS[0] + this.SUITS[2],
-        this.CARDS[0] + this.SUITS[3],
+    get DECK_SELECTION() { 
+        return [
+            // A
+            this.CARDS[0] + this.SUITS[0],
+            this.CARDS[0] + this.SUITS[1],
+            this.CARDS[0] + this.SUITS[2],
+            this.CARDS[0] + this.SUITS[3],
 
-        // J
-        this.CARDS[10] + this.SUITS[0],
-        this.CARDS[10] + this.SUITS[1],
-        this.CARDS[10] + this.SUITS[2],
-        this.CARDS[10] + this.SUITS[3],
+            // J
+            this.CARDS[10] + this.SUITS[0],
+            this.CARDS[10] + this.SUITS[1],
+            this.CARDS[10] + this.SUITS[2],
+            this.CARDS[10] + this.SUITS[3],
 
-        // Q
-        this.CARDS[11] + this.SUITS[0],
-        this.CARDS[11] + this.SUITS[1],
-        this.CARDS[11] + this.SUITS[2],
-        this.CARDS[11] + this.SUITS[3],
+            // Q
+            this.CARDS[11] + this.SUITS[0],
+            this.CARDS[11] + this.SUITS[1],
+            this.CARDS[11] + this.SUITS[2],
+            this.CARDS[11] + this.SUITS[3],
 
-        // K
-        this.CARDS[12] + this.SUITS[0],
-        this.CARDS[12] + this.SUITS[1],
-        this.CARDS[12] + this.SUITS[2],
-        this.CARDS[12] + this.SUITS[3],
-    ]
+            // K
+            this.CARDS[12] + this.SUITS[0],
+            this.CARDS[12] + this.SUITS[1],
+            this.CARDS[12] + this.SUITS[2],
+            this.CARDS[12] + this.SUITS[3],
+        ]
+    }
 
     constructor() {
         console.info(`model construido`)
@@ -55,7 +57,7 @@ class Model {
         //The suit, one of S (Spades), D (Diamonds), C (Clubs), or H (Hearts).
 
         // teste do caceta
-        this.consumeDeckApi(this.ACTIONS.SHUFFLE_DECK, { deck_count: 1, cards: this.DECK_SELECTION })
+        this.consumeDeckApi(this.ACTIONS, { deck_count: 1, cards: this.DECK_SELECTION })
             .done(function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
                 $.publish('model.initialShuffle', JSON.stringify(data))
