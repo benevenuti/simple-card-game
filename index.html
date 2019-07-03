@@ -6,10 +6,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!--link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"-->
 
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Titillium+Web&display=swap" rel="stylesheet">
 
     <title>Consumes Deck of Cards API</title>
 
@@ -17,19 +18,26 @@
 
 
 <body>
-    <h1>Consumes Deck of Cards API</h1>
+    
 
 
     <div class="grid">
+        <h1>Consumes Deck of Cards API</h1>
         <ul id="cardList" class="list">
 
         </ul>
+
+        <h3 class="lblP1">Player 1</h3>
+        <h3 class="lblP2">Player 2</h3>
+        <div class="lblP1frame"></div>
+        <div class="lblP2frame"></div>
 
         <div style="position: absolute; bottom: 50px">
             <button class="stack">Stack</button>
             <button class="spread">Spread</button>
             <button class="shuffle">Shuffle</button>
             <button class="flip">Flip</button>
+            <button class="player">Player</button>
         </div>
 
     </div>

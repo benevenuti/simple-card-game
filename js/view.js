@@ -25,6 +25,10 @@ class View {
         $('.flip').click(function () {
             self.toogleFlipAll();
         });
+
+        $('.player').click(function () {
+            self.player();
+        });
     }
 
     geraCard() {
@@ -53,20 +57,39 @@ class View {
         this.cards.forEach(function (o, e) {
             setTimeout(function () {
                 o.removeClass("ani" + e)
+                o.removeClass("p1")
+                o.removeClass("p2")
             }, e * 150)
         })
     }
     spread() {
         this.cards.forEach(function (o, e) {
             setTimeout(function () {
+                o.removeClass("p1")
+                o.removeClass("p2")
                 o.addClass("ani" + e)
             }, e * 150)
         })
     }
+
+    player() {
+        this.cards.forEach(function (o, e) {
+            setTimeout(function () {
+                o.removeClass("ani" + e)
+                if(e%2 == 0)
+                    o.addClass("p1")
+                else 
+                    o.addClass("p2")
+            }, e * 150)
+        })
+    }
+
     shuffle() {
         this.cards.forEach(function (o, e) {
             setTimeout(function () {
                 o.removeClass("ani" + e)
+                o.removeClass("p1")
+                o.removeClass("p2")
                 var deck = ((Math.floor(Math.random() * 3) + 1).toFixed(0))
                 o.addClass("deck" + deck)
                 setTimeout(function () {
