@@ -13,7 +13,7 @@ class Controller {
 
         // inscricao no pubsub dos eventos do model
         $.subscribe(`model.event.${this.Model.EVENTS.HASADDTOMESADESVIRADA}`, this.verificaDesvirada.bind(this))
-        $.subscribe(`model.event.${this.Model.EVENTS.HASSHUFFLE}`, this.modelEvent.bind(this))
+        $.subscribe(`model.event.${this.Model.EVENTS.UPDATE}`, this.update.bind(this))
 
         // inscricao no pubsub dos eventos da view
         $.subscribe('view.clickCarta', this.clickCarta.bind(this))
@@ -58,7 +58,6 @@ class Controller {
 
     verificaDesvirada(event, obj) {
         console.info(`chamou model.event.${this.Model.EVENTS.HASADDTOMESADESVIRADA}`)
-
         let idxs = [];
         let desviradas = this.Model.mesaDesvirada.filter(
             (o, i) => { 
@@ -89,15 +88,18 @@ class Controller {
         }
     }
 
-    modelEvent(event, obj) {
+    update(event, obj) {
         console.info(`chamou model.event`)
         $.publish("view.notify", {obj})
     }
 
     clickCarta(e, payload) {
         console.info(`chamou view.clickCarta`)
-        if(this.Model.mesaDesvirada != null && this.Model.mesaDesvirada.filter(o => o.remaining > 0).length < 2) {
-            $.publish("model.addToMesaDesvirada", {indice: payload.target.data("indice")});
+        if(this.Model.mesaVirada != null && this.Model.mesaVirada[payload.target.data("indice")].remaining > 0) {
+            if(this.Model.mesaDesvirada != null && this.Model.mesaDesvirada.filter(o => o.remaining > 0).length < 2) {
+                $.publish("model.addToMesaDesvirada", {indice: payload.target.data("indice")});
+                //TODO: busca mesa desvirada
+            }
         }
     }
 }

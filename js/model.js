@@ -214,7 +214,7 @@ class Model {
     }
 
     addToMesaVirada(p, payload) {
-        this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[payload.idxmesavirada], { cards: payload.card })
+        this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[payload.indice], { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
                 $.publish(`model.event.${this.EVENTS.HASADDTOMESAVIRADA}`, { model: this, payload })
@@ -225,7 +225,7 @@ class Model {
     }
 
     addToMesaDesvirada(p, payload) {
-        this.consumeDeckApi(this.ACTIONS.ADD_MESA_DESVIRADA[payload.idxmesadesvirada], { cards: payload.card })
+        this.consumeDeckApi(this.ACTIONS.ADD_MESA_DESVIRADA[payload.indice], { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
                 $.publish(`model.event.${this.EVENTS.HASADDTOMESADESVIRADA}`, { model: this, payload })
