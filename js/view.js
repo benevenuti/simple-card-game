@@ -8,7 +8,9 @@ class View {
         //$.subscribe("model.initialShuffle", this.shuffle.bind(this))
 
         //$.subscribe("view.clickCarta", this.clickCarta.bind(this)) // vai mudar para op controller
-        $.subscribe("view.notify", this.notify.bind(this))
+        //$.subscribe("view.notify", this.notify.bind(this))
+
+        $.subscribe("controller.", this.notify.bind(this))
 
         this.init(cardCount)
         this.buttonBindregister(this)

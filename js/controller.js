@@ -15,7 +15,20 @@ class Controller {
     }
 
     embaralha() {
-        console.log(this.Model.shuffle())
+        this.Model.TOTAL_CARD_COUNT
+
+        let ret = this.Model.shuffle()
+
+        let remaining = ret.data.remaining
+
+        while (remaining > 0) {
+            let drawn = this.Model.draw()
+            let card = drawn.data.cards[0]
+            remaining = drawn.data.remaining
+            this.Model.addToMesaVirada(card.code)
+            $.publish('controller.')
+            //this.View.geraCard(card)
+        }
     }
 
     addToMesaVirada() {
@@ -63,15 +76,15 @@ class Controller {
                 if(this.Model.vez != null && this.Model.vez.remaining == 1) {
                     $.publish("model.addToP1", {indice: idxs[0]});
                     $.publish("model.addToP1", {indice: idxs[1]});
-                }
-                else {
+                } else {
                     $.publish("model.addToP2", {indice: idxs[0]});
                     $.publish("model.addToP2", {indice: idxs[1]});
                 }
-            }
-            else {
-                $.publish("model.addToMesaVirada", {indice: idxs[0]});
-                $.publish("model.addToMesaVirada", {indice: idxs[1]});
+            } else {
+                let carta = this.Model.drawFromMesaDesvirada(idxs[0])                
+                this.Model.addToMesaVirada(carta)
+                carta = this.Model.drawFromMesaDesvirada(idxs[1])                
+                this.Model.addToMesaVirada(carta)
             }
 
             if(this.Model.vez != null && this.Model.vez.remaining == 1)
@@ -88,9 +101,11 @@ class Controller {
 
     clickCarta(e, payload) {
         console.info(`chamou view.clickCarta`)
+        console.dir(payload)
         if(this.Model.mesaVirada != null && this.Model.mesaVirada[payload.target.data("indice")].remaining > 0) {
             if(this.Model.mesaDesvirada != null && this.Model.mesaDesvirada.filter(o => o.remaining > 0).length < 2) {
-                $.publish("model.addToMesaDesvirada", {indice: payload.target.data("indice")});
+                let carta = this.Model.drawFromMesaVirada(payload.target.data("indice"))                
+                this.Model.addToMesaDesvirada(carta)
                 //TODO: busca mesa desvirada
             }
         }
