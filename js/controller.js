@@ -9,7 +9,7 @@ class Controller {
     }
 
     inicializa() {
-        console.info(` controller inicializado`)
+        console.info(`controller inicializado`)
         $.subscribe('view.clickCarta', this.clickCarta.bind(this))
         this.embaralha()
     }

@@ -151,7 +151,6 @@ class View {
             this.toggleFlip(model.mesaVirada)            
         }
 
-
         if(model.vez != null && model.vez.remaining == 1) {
             $(".lblP1").addClass("vez")
             $(".lblP2").removeClass("vez")
@@ -159,8 +158,7 @@ class View {
         else if(model.vez != null) {
             $(".lblP2").addClass("vez")
             $(".lblP1").removeClass("vez")
-        }
-        
+        }        
          
         model.pilhaJogador1 = null;
         model.pilhaJogador2 = null;

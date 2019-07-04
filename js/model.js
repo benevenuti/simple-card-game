@@ -110,28 +110,22 @@ class Model {
     }
 
     // not working
-    async consumeDeckApi(action, paramsObj) {
+    consumeDeckApi(action, paramsObj) {
         let myUrl = this.BASE_URL + action
         let ret = null
 
-        async function() {
-
-        let jx = await $.ajax({
+        let jx = $.ajax({
             url: myUrl,
-            async : false,
+            async: false,
             type: 'GET',
             data: paramsObj
+        }).done(function (data, textStatus, jqXHR) {
+            console.info('ajax done', data, textStatus)
+            ret = { data, textStatus }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.error('ajax fail', jqXHR, textStatus, errorThrown)
+            ret = { data: null, textStatus }
         })
-
-        jx.done(function (data, textStatus, jqXHR) {
-                console.info(data, textStatus)
-                ret = { data, textStatus }
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                console.error(jqXHR, textStatus, errorThrown)
-                ret = { data: null, textStatus }
-            })
-        }
 
         return ret
     }
