@@ -7,7 +7,7 @@ class View {
 
         //$.subscribe("model.initialShuffle", this.shuffle.bind(this))
 
-        //$.subscribe("view.clickCarta", this.clickCarta.bind(this)) // vai mudar para op controller
+        $.subscribe("view.clickCarta", this.clickCarta.bind(this)) // vai mudar para op controller
         //$.subscribe("view.notify", this.notify.bind(this))
 
         $.subscribe("controller.cardDrawnToMesaVirada", this.appendCard.bind(this))
@@ -51,23 +51,29 @@ class View {
                     .append($("<div>").addClass("flip-card-front")
                         .append($("<img>").addClass("imgCarta")
                             .attr("src", "card-back-orange.png")
-                            .attr("alt", `Fundo ${param.card.value} of ${param.card.suit}`)))
+                            .attr("alt", `Fundo - ${param.card.value} of ${param.card.suit}`)))
                     .append($("<div>").addClass("flip-card-back")
                         .append($("<img>").addClass("imgCarta")
-                            .attr("src", `${param.card.images.svg}`)
+                            .attr("src", `${param.card.images.png}`)
                             .attr("alt", `Frente - ${param.card.value} of ${param.card.suit}`)))))
             .click(function (e) {
                 $.publish('view.clickCarta', { event: e, target: $(this) })
             })
     }
 
-    appendCard(idx, card){
-        this.cardContainer.append(this.geraCard(idx, card))
+    appendCard(event, params){
+        let cardView = this.geraCard(null, params)
+        this.cards.push(cardView)
+        this.cardContainer.append(cardView)
+
+        console.log('append', params)
+
+        this.spread($(cardView), params.idx)
     }
 
     clickCarta(event, param) {
         //console.log('view.clickCarta', event, param)
-        //this.toggleFlip($(param.target))
+       this.toggleFlip($(param.target))
     }
 
     stackAll() {

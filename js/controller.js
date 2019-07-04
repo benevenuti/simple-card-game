@@ -26,7 +26,7 @@ class Controller {
             // pega carta do novo deck 
             let drawn = this.Model.draw()
             let card = drawn.data.cards[0]
-            remaining = drawn.data.remaining
+            //remaining = drawn.data.remaining
             // adiciona a carta para a pilha de cartas viradas
             this.Model.addToMesaVirada(idx, card.code)
             // publica o evento da carta, quem ouve é a view
