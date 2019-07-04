@@ -9,6 +9,7 @@ class Model {
             HASADDTOP2: "hasAddToP2",
             HASADDTOMESAVIRADA: "hasAddToMesaVirada",
             HASADDTOMESADESVIRADA: "hasAddToMesaDesvirada",
+            UPDATE: "update"
         }
     }
 
@@ -127,7 +128,7 @@ class Model {
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
                 this.deckid = data.deck_id;
-                $.publish("model.event" + this.EVENTS.HASSHUFFLE, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASSHUFFLE}`, { model: this, payload })
                 
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
@@ -140,7 +141,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.DRAW_DECK, { count: 1 })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish("model.event", { model: this, payload, event: this.EVENTS.HASDRAW })
+                $.publish(`model.event.${this.EVENTS.HASDRAW}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -152,7 +153,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_VEZ, { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish("model.event", { model: this, payload, event: this.EVENTS.HASADDTOVEZ })
+                $.publish(`model.event.${this.EVENTS.HASADDTOVEZ}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -165,7 +166,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_PILHA_P1, { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish("model.event", { model: this, payload, event: this.EVENTS.HASADDTOP1 })
+                $.publish(`model.event.${this.EVENTS.HASADDTOP1}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -178,7 +179,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_PILHA_P2, { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish("model.event", { model: this, payload, event: this.EVENTS.HASADDTOP2 })
+                $.publish(`model.event.${this.EVENTS.HASADDTOP2}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -191,7 +192,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[payload.idxmesavirada], { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish("model.event", { model: this, payload, event: this.EVENTS.HASADDTOMESAVIRADA })
+                $.publish(`model.event.${this.EVENTS.HASADDTOMESAVIRADA}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -203,18 +204,40 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_MESA_DESVIRADA[payload.idxmesadesvirada], { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish("model.event", { model: this, payload, event: this.EVENTS.HASADDTOMESADESVIRADA })
+                $.publish(`model.event.${this.EVENTS.HASADDTOMESADESVIRADA}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
             })
     }
 
-    // TODO: LIST P1 PILE TO UPDATE MODEL
-    // TODO: LIST P2 PILE TO UPDATE MODEL
-    // TODO: LIST VEZ PILE TO UPDATE MODEL
-    // TODO: LIST MESAVIRADA PILE TO UPDATE MODEL
-    // TODO: LIST MESADESVIRADA PILE TO UPDATE MODEL
+    
+    grabP1() {
+        // TODO: LIST P1 PILE TO UPDATE MODEL
+        $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
+        
+    }
+    
+    grabP2() {
+        // TODO: LIST P2 PILE TO UPDATE MODEL
+        $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
+        
+    }
+
+    grabVez() {
+        // TODO: LIST VEZ PILE TO UPDATE MODEL
+        $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
+    }
+    
+    grabMesavirada() {
+        // TODO: LIST MESAVIRADA PILE TO UPDATE MODEL
+        $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
+    }
+    
+    grabMesaDesvirada() {
+        // TODO: LIST MESADESVIRADA PILE TO UPDATE MODEL
+        $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
+    }
 
 
     consumeDeckApi(action, paramsObj) {
