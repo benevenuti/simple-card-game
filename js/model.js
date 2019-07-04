@@ -120,20 +120,19 @@ class Model {
             type: 'GET',
             data: paramsObj
         }).done(function (data, textStatus, jqXHR) {
-            console.info('ajax done', data, textStatus)
-            ret = { data, textStatus }
+            console.info('ajax done', data, textStatus, jqXHR)
+            ret = { data: data, textStatus: textStatus }
         }).fail(function (jqXHR, textStatus, errorThrown) {
             console.error('ajax fail', jqXHR, textStatus, errorThrown)
-            ret = { data: null, textStatus }
+            ret = { data: null, textStatus: textStatus }
         })
 
         return ret
     }
 
     shuffle() {
-        let ret = this.consumeDeckApi(this.ACTIONS.SHUFFLE_DECK, { deck_count: this.DECK_COUNT, cards: this.DECK_SELECTION.join(",") })
-        console.info('model.shuffle', ret)
-        //this.deckid = ret.data.deck_id
+        let ret = this.consumeDeckApi(this.ACTIONS.SHUFFLE_DECK, { deck_count: this.DECK_COUNT, cards: this.DECK_SELECTION.join(",") })        
+        this.deckid = ret.data.deck_id
         return ret
     }
 
