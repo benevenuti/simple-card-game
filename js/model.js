@@ -83,14 +83,8 @@ class Model {
             ADD_PILHA_P2: `deck/${this.deckid}/pile/p2/add/`,
             DRAW_PILHA_P1: `deck/${this.deckid}/pile/p1/draw/`,
             DRAW_PILHA_P2: `deck/${this.deckid}/pile/p2/draw/`,
-            LIST_MESA_VIRADA:
-                ' '.repeat((this.TOTAL_CARD_COUNT) - 1).split(' ').map(function (o, i) {
-                    return `deck/${this.deckid}/pile/mesavirada${i}/list/`
-                }.bind(this)),
-            LIST_MESA_DESVIRADA:
-                ' '.repeat((this.TOTAL_CARD_COUNT) - 1).split(' ').map(function (o, i) {
-                    return `deck/${this.deckid}/pile/mesadesvirada${i}/list/`
-                }.bind(this)),
+            LIST_MESA_VIRADA: `deck/${this.deckid}/pile/mesavirada/list/`,
+            LIST_MESA_DESVIRADA: `deck/${this.deckid}/pile/mesadesvirada/list/`,                
             LIST_VEZ: `deck/${this.deckid}/pile/vez/list/`,
             LIST_PILHA_P1: `deck/${this.deckid}/pile/p1/list/`,
             LIST_PILHA_P2: `deck/${this.deckid}/pile/p2/list/`
@@ -109,7 +103,6 @@ class Model {
         this.pilhaJogador2 = null
     }
 
-    // not working
     consumeDeckApi(action, paramsObj) {
         let myUrl = this.BASE_URL + action
         let ret = null
@@ -157,11 +150,15 @@ class Model {
     }
 
     addToMesaVirada(card) {
-        return this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[payload.indice], { cards: card })
+        return this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA, { cards: card })
     }
 
-    addToMesaDesvirada(card) {
-        return this.consumeDeckApi(this.ACTIONS.ADD_MESA_DESVIRADA[payload.indice], { cards: card })
+    drawFromMesaVirada(card) {
+        return this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA, { cards: card })
+    }
+
+    addToMesaDesvirada(icard) {
+        return this.consumeDeckApi(this.ACTIONS.ADD_MESA_DESVIRADA, { cards: card })
     }
 
     listPlayer1Pile() {

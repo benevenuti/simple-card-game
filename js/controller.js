@@ -17,17 +17,20 @@ class Controller {
     embaralha() {
         this.Model.TOTAL_CARD_COUNT
 
+        // solicita novo deck para o model
         let ret = this.Model.shuffle()
 
         let remaining = ret.data.remaining
 
-        while (remaining > 0) {
+        for (let idx = 0; idx < remaining; idx++) {
+            // pega carta do novo deck 
             let drawn = this.Model.draw()
             let card = drawn.data.cards[0]
             remaining = drawn.data.remaining
-            this.Model.addToMesaVirada(card.code)
-            $.publish('controller.')
-            //this.View.geraCard(card)
+            // adiciona a carta para a pilha de cartas viradas
+            this.Model.addToMesaVirada(idx, card.code)
+            // publica o evento da carta, quem ouve é a view
+            $.publish('controller.cardDrawnToMesaVirada', { idx : idx, card : card } )            
         }
     }
 

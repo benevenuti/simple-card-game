@@ -10,9 +10,8 @@ class View {
         //$.subscribe("view.clickCarta", this.clickCarta.bind(this)) // vai mudar para op controller
         //$.subscribe("view.notify", this.notify.bind(this))
 
-        $.subscribe("controller.", this.notify.bind(this))
-
-        this.init(cardCount)
+        $.subscribe("controller.cardDrawnToMesaVirada", this.appendCard.bind(this))
+        
         this.buttonBindregister(this)
     }
 
@@ -38,39 +37,37 @@ class View {
         });
     }
 
-    geraCard(indice) {
-        console.info("generate card")
-        return $("<li>").addClass("card").data("indice", indice)
-            .attr("data-indice", indice)
+    geraCard(event, param) {
+        console.info("generate card", param)
+        return $("<li>").addClass("card").data("indice", param.idx)
+            .attr("data-idx", param.idx)
+            .attr("data-code", param.card.code)
+            .attr("data-suit", param.card.suit)
+            .attr("data-value", param.card.value)
+            .attr("data-img-png", param.card.images.png)
+            .attr("data-img-svg", param.card.images.svg)
             .append($("<div>").addClass("flip-card")
                 .append($("<div>").addClass("flip-card-inner")
                     .append($("<div>").addClass("flip-card-front")
                         .append($("<img>").addClass("imgCarta")
-
-                            .attr("src", "_card-back-orange.png")
-                            .attr("alt", "Carta Fundo")))
+                            .attr("src", "card-back-orange.png")
+                            .attr("alt", `Fundo ${param.card.value} of ${param.card.suit}`)))
                     .append($("<div>").addClass("flip-card-back")
                         .append($("<img>").addClass("imgCarta")
-
-                            .attr("src", "_https://deckofcardsapi.com/static/img/AS.png")
-                            .attr("alt", "Carta Frente")))))
+                            .attr("src", `${param.card.images.svg}`)
+                            .attr("alt", `Frente - ${param.card.value} of ${param.card.suit}`)))))
             .click(function (e) {
                 $.publish('view.clickCarta', { event: e, target: $(this) })
             })
     }
 
+    appendCard(idx, card){
+        this.cardContainer.append(this.geraCard(idx, card))
+    }
+
     clickCarta(event, param) {
         //console.log('view.clickCarta', event, param)
         //this.toggleFlip($(param.target))
-    }
-
-    init(qtd) {
-        console.info("init")
-        ' '.repeat(qtd - 1).split(' ').forEach(function (o, i) {
-            this.cards.push(this.geraCard(i))
-        }.bind(this))
-        console.info("cards.length: " + this.cards.length)
-        this.cardContainer.append(this.cards)
     }
 
     stackAll() {
