@@ -166,6 +166,10 @@ html, body {
     bottom: calc(calc(calc(100%/2) - calc(160px/2)) - calc(50px/2));
 }
 
+.vez {
+  background-color: #0F0;
+}
+
 .lblP1 {
     position: absolute;
     background-color: #fff;
