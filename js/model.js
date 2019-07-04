@@ -2,18 +2,21 @@ class Model {
 
     get EVENTS() {
         return {
-            HASSHUFFLE: "hasShuffle",
-            HASDRAW: "hasDraw",
-            HASADDTOVEZ: "hasAddToVez",
-            HASDRAWFROMVEZ: "hasDrawFromVez",
-            HASADDTOP1: "hasAddToP1",
-            HASADDTOP2: "hasAddToP2",
-            HASADDTOMESAVIRADA: "hasAddToMesaVirada",
-            HASADDTOMESADESVIRADA: "hasAddToMesaDesvirada",
+            HASSHUFFLED: "hasShuffled",
+            HASDRAWN: "hasDraw",
+            HASADDEDTOVEZ: "hasAddToVez",
+            HASADDEDTOP1: "hasAddToP1",
+            HASADDEDTOP2: "hasAddToP2",
+            HASADDEDTOMESAVIRADA: "hasAddToMesaVirada",
+            HASADDEDTOMESADESVIRADA: "hasAddToMesaDesvirada",
+            HASLISTEDP1PILE: "hasListedP1Pile",
+            HASLISTEDP2PILE: "hasListedP2Pile",
+            HASLISTEDVEZPILE: "hasListedVezPile",
+            HASLISTEDMESAVIRADAPILE: "hasListedMesaViradaPile",
+            HASLISTEDMESADESVIRADAPILE: "hasListedMesaDesviradaPile",
             UPDATE: "update"
         }
     }
-
 
     get ACTIONS() {
         return {
@@ -57,7 +60,7 @@ class Model {
 
     get baseUrl() { return "https://deckofcardsapi.com/api/" }
 
-    //The value, one of A (for an ace), 2, 3, 4, 5, 6, 7, 8, 9, 0 (for a ten), J (jack), Q (queen), or K (king);
+    //The value, one of A (for an ace), 2, 3, 4, 5, 6, 7, 8, 9, 0 (for a ten), J (jack), Q (queen), or K (king)
     get CARDS() { return ["A", "2", "3", "4", "5", "6", "7", "8", "9", "0", "J", "Q", "K"] }
     //The suit, one of S (Spades), D (Diamonds), C (Clubs), or H (Hearts).
     get SUITS() { return ["S", "D", "C", "H"] }
@@ -97,14 +100,15 @@ class Model {
     constructor(deckid = null) {
         console.info(`model construido`)
 
-        this.deckid = deckid;
+        this.deckid = deckid
 
-        this.mesaVirada = null;
-        this.mesaDesvirada = null;
-        this.vez = null;
-        this.pilhaJogador1 = null;
-        this.pilhaJogador2 = null;
+        this.drawnCard = null
 
+        this.mesaVirada = null
+        this.mesaDesvirada = null
+        this.vez = null
+        this.pilhaJogador1 = null
+        this.pilhaJogador2 = null
 
         $.subscribe("model.shuffle", this.shuffle.bind(this));
         $.subscribe("model.addToMesaDesvirada", this.addToMesaDesvirada.bind(this));
@@ -116,12 +120,19 @@ class Model {
         $.subscribe("model.draw", this.draw.bind(this));
         $.subscribe("model.update", this.update.bind(this));
 
+        $.subscribe("model.listP1Pile", this.listPlayer1Pile.bind(this))
+        $.subscribe("model.listP2Pile", this.listPlayer2Pile.bind(this))
+
+        $.subscribe("model.listVezPile", this.listVezPile.bind(this))
+
+        $.subscribe("model.listMesaDesviradaPile", this.listMesaDesviradaPile.bind(this))
+        $.subscribe("model.listMesaViradaPile", this.listMesaViradaPile.bind(this))
 
         //A Partial Deck:
         //https://deckofcardsapi.com/api/deck/new/shuffle/?cards=AS,2S,KS,AD,2D,KD,AC,2C,KC,AH,2H,KH
         //If you want to use a partial deck, then you can pass the card codes you want to use using the cards parameter. Separate the card codes with commas, and each card code is a just a two character case-insensitive string:
 
-        //The value, one of A (for an ace), 2, 3, 4, 5, 6, 7, 8, 9, 0 (for a ten), J (jack), Q (queen), or K (king);
+        //The value, one of A (for an ace), 2, 3, 4, 5, 6, 7, 8, 9, 0 (for a ten), J (jack), Q (queen), or K (king)
         //The suit, one of S (Spades), D (Diamonds), C (Clubs), or H (Hearts).
 
         // teste do caceta
@@ -145,9 +156,8 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.SHUFFLE_DECK, { deck_count: 2, cards: [this.TURN_CONTROLLER_CARD, ...this.DECK_SELECTION].join(",") })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                this.deckid = data.deck_id;
-                $.publish(`model.event.${this.EVENTS.HASSHUFFLE}`, { model: this, payload })
-                
+                this.deckid = data.deck_id
+                $.publish(`model.event.${this.EVENTS.HASSHUFFLED}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -158,7 +168,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.DRAW_DECK, { count: 1 })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish(`model.event.${this.EVENTS.HASDRAW}`, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASDRAWN}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -169,7 +179,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_VEZ, { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish(`model.event.${this.EVENTS.HASADDTOVEZ}`, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASADDEDTOVEZ}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -193,7 +203,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_PILHA_P1, { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish(`model.event.${this.EVENTS.HASADDTOP1}`, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASADDEDTOP1}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -205,7 +215,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_PILHA_P2, { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish(`model.event.${this.EVENTS.HASADDTOP2}`, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASADDEDTOP2}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -217,7 +227,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[payload.indice], { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish(`model.event.${this.EVENTS.HASADDTOMESAVIRADA}`, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASADDEDTOMESAVIRADA}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -228,41 +238,104 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_MESA_DESVIRADA[payload.indice], { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish(`model.event.${this.EVENTS.HASADDTOMESADESVIRADA}`, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASADDEDTOMESADESVIRADA}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
             })
     }
 
-    
+    listPlayer1Pile(p, payload) {
+        $.publish(payload.publish, payload)
+        this.consumeDeckApi(this.ACTIONS.LIST_PILHA_P1, {})
+            .done((function (data, textStatus, jqXHR) {
+                console.info(data, textStatus)
+                this.pilhaJogador1 = data
+                $.publish(`model.event${this.EVENTS.HASLISTEDP1PILE}`, { model: this, payload })
+            }).bind(this))
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                console.error(jqXHR, textStatus, errorThrown)
+            })
+    }
+
+    listPlayer2Pile(p, payload) {
+        $.publish(payload.publish, payload)
+        this.consumeDeckApi(this.ACTIONS.LIST_PILHA_P2, {})
+            .done((function (data, textStatus, jqXHR) {
+                console.info(data, textStatus)
+                this.pilhaJogador2 = data
+                $.publish(`model.event${this.EVENTS.HASLISTEDP2PILE}`, { model: this, payload })
+            }).bind(this))
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                console.error(jqXHR, textStatus, errorThrown)
+            })
+    }
+
     grabP1() {
         // TODO: LIST P1 PILE TO UPDATE MODEL
         $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
-        
+
     }
-    
+
     grabP2() {
         // TODO: LIST P2 PILE TO UPDATE MODEL
         $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
-        
+
     }
 
     grabVez() {
         // TODO: LIST VEZ PILE TO UPDATE MODEL
         $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
     }
-    
+
     grabMesavirada() {
         // TODO: LIST MESAVIRADA PILE TO UPDATE MODEL
         $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
     }
-    
+
     grabMesaDesvirada() {
         // TODO: LIST MESADESVIRADA PILE TO UPDATE MODEL
         $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
     }
 
+    listVezPile(p, payload) {
+        $.publish(payload.publish, payload)
+        this.consumeDeckApi(this.ACTIONS.LIST_PILHA_P2, {})
+            .done((function (data, textStatus, jqXHR) {
+                console.info(data, textStatus)
+                this.vez = data
+                $.publish(`model.event.${this.EVENTS.HASLISTEDVEZPILE}`, { model: this, payload })
+            }).bind(this))
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                console.error(jqXHR, textStatus, errorThrown)
+            })
+    }
+
+    listMesaViradaPile(p, payload) {
+        $.publish(payload.publish, payload)
+        this.consumeDeckApi(this.ACTIONS.LIST_MESA_VIRADA, {})
+            .done((function (data, textStatus, jqXHR) {
+                console.info(data, textStatus)
+                this.mesaVirada = data
+                $.publish(`model.event.${this.EVENTS.HASLISTEDMESAVIRADAPILE}`, { model: this, payload })
+            }).bind(this))
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                console.error(jqXHR, textStatus, errorThrown)
+            })
+    }
+
+    listMesaDesviradaPile(p, payload) {
+        $.publish(payload.publish, payload)
+        this.consumeDeckApi(this.ACTIONS.LIST_MESA_DESVIRADA, {})
+            .done((function (data, textStatus, jqXHR) {
+                console.info(data, textStatus)
+                this.mesaDesvirada = data
+                $.publish(`model.event.${this.EVENTS.HASLISTEDMESADESVIRADAPILE}`, { model: this, payload })
+            }).bind(this))
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                console.error(jqXHR, textStatus, errorThrown)
+            })
+    }
 
     consumeDeckApi(action, paramsObj) {
         let myUrl = this.baseUrl + action
