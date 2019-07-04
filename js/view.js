@@ -45,12 +45,12 @@ class View {
                     .append($("<div>").addClass("flip-card-front")
                         .append($("<img>").addClass("imgCarta")
 
-                            .attr("src", "card-back-orange.png")
+                            .attr("src", "_card-back-orange.png")
                             .attr("alt", "Carta Fundo")))
                     .append($("<div>").addClass("flip-card-back")
                         .append($("<img>").addClass("imgCarta")
 
-                            .attr("src", "https://deckofcardsapi.com/static/img/AS.png")
+                            .attr("src", "_https://deckofcardsapi.com/static/img/AS.png")
                             .attr("alt", "Carta Frente")))))
             .click(function (e) {
                 $.publish('view.clickCarta', { event: e, target: $(this) })

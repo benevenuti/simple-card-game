@@ -10,19 +10,12 @@ class Controller {
 
     inicializa() {
         console.info(` controller inicializado`)
-
-        // inscricao no pubsub dos eventos do model
-        $.subscribe(`model.event.${this.Model.EVENTS.HASADDTOMESADESVIRADA}`, this.verificaDesvirada.bind(this))
-        $.subscribe(`model.event.${this.Model.EVENTS.UPDATE}`, this.update.bind(this))
-
-        // inscricao no pubsub dos eventos da view
         $.subscribe('view.clickCarta', this.clickCarta.bind(this))
-
         this.embaralha()
     }
 
     embaralha() {
-        $.publish('model.shuffle', {publish: "model.initialShuffle"})
+        console.log(this.Model.shuffle())
     }
 
     addToMesaVirada() {
