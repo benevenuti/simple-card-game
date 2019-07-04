@@ -12,41 +12,41 @@ class Controller {
         console.info(` controller inicializado`)
 
         // inscricao no pubsub dos eventos do model
-        $.subscribe('model.playEvent.ctrl', this.play.bind(this))
-        $.subscribe('model.event', this.modelEvent.bind(this))
+        $.subscribe(`model.event.${this.Model.EVENTS.HASADDTOMESADESVIRADA}`, this.verificaDesvirada.bind(this))
+        $.subscribe(`model.event.${this.Model.EVENTS.UPDATE}`, this.update.bind(this))
 
         // inscricao no pubsub dos eventos da view
-        $.subscribe('view.qulquerEvento.ctrl', this.qualquerEvento.bind(this))
+        $.subscribe('view.clickCarta', this.clickCarta.bind(this))
 
         this.embaralha()
     }
 
     embaralha() {
-        $.publish('controller.shuffle', {publish: "model.initialShuffle"})
+        $.publish('model.shuffle', {publish: "model.initialShuffle"})
     }
 
     addToMesaVirada() {
-        $.publish("controller.addToMesaDesvirada", {publish: "model.initialShuffle"});
+        $.publish("model.addToMesaDesvirada", {publish: "model.initialShuffle"});
     }
 
     addToMesaVirada() {
-        $.publish("controller.addToMesaVirada", {publish: "model.initialShuffle"});
+        $.publish("model.addToMesaVirada", {publish: "model.initialShuffle"});
     }
 
     addToP1() {
-        $.publish("controller.addToP1", {publish: "model.initialShuffle"});
+        $.publish("model.addToP1", {publish: "model.initialShuffle"});
     }
 
     addToP2() {
-        $.publish("controller.addToP2", {publish: "model.initialShuffle"});
+        $.publish("model.addToP2", {publish: "model.initialShuffle"});
     }
 
     addToVez() {
-        $.publish("controller.addToVez", {publish: "model.initialShuffle"});
+        $.publish("model.addToVez", {publish: "model.initialShuffle"});
     }
 
     draw() {
-        $.publish("controller.draw", {publish: "model.initialShuffle"});
+        $.publish("model.draw", {publish: "model.initialShuffle"});
     }
 
     
@@ -56,16 +56,51 @@ class Controller {
 
 
 
-    play(event, obj) {
-        console.info(`chamou ctrl.play`)
+    verificaDesvirada(event, obj) {
+        console.info(`chamou model.event.${this.Model.EVENTS.HASADDTOMESADESVIRADA}`)
+        let idxs = [];
+        let desviradas = this.Model.mesaDesvirada.filter(
+            (o, i) => { 
+                idxs.push(i);
+                return o.remaining > 0
+            }
+        );
+        if(this.Model.mesaDesvirada != null && desviradas.length >= 2) {
+            if(desviradas[0].cards[0].code == desviradas[1].cards[0].code) {
+                if(this.Model.vez != null && this.Model.vez.remaining == 1) {
+                    $.publish("model.addToP1", {indice: idxs[0]});
+                    $.publish("model.addToP1", {indice: idxs[1]});
+                }
+                else {
+                    $.publish("model.addToP2", {indice: idxs[0]});
+                    $.publish("model.addToP2", {indice: idxs[1]});
+                }
+            }
+            else {
+                $.publish("model.addToMesaVirada", {indice: idxs[0]});
+                $.publish("model.addToMesaVirada", {indice: idxs[1]});
+            }
+
+            if(this.Model.vez != null && this.Model.vez.remaining == 1)
+                $.publish("model.drawFromVez", {cards: this.Model.TURN_CONTROLLER_CARD});
+            else
+                $.publish("model.addToVez", {cards: this.Model.TURN_CONTROLLER_CARD});
+        }
     }
 
-    modelEvent(event, obj) {
-        console.info(`chamou model event`)
+    update(event, obj) {
+        console.info(`chamou model.event`)
+        $.publish("view.notify", {obj})
     }
 
-    qualquerEvento() {
-        console.info(`chamou ctrl.qualquerEvento`)
+    clickCarta(e, payload) {
+        console.info(`chamou view.clickCarta`)
+        if(this.Model.mesaVirada != null && this.Model.mesaVirada[payload.target.data("indice")].remaining > 0) {
+            if(this.Model.mesaDesvirada != null && this.Model.mesaDesvirada.filter(o => o.remaining > 0).length < 2) {
+                $.publish("model.addToMesaDesvirada", {indice: payload.target.data("indice")});
+                //TODO: busca mesa desvirada
+            }
+        }
     }
 }
 

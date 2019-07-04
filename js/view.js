@@ -7,7 +7,7 @@ class View {
 
         //$.subscribe("model.initialShuffle", this.shuffle.bind(this))
 
-        $.subscribe("view.clickCarta", this.clickCarta.bind(this)) // vai mudar para op controller
+        //$.subscribe("view.clickCarta", this.clickCarta.bind(this)) // vai mudar para op controller
         $.subscribe("view.notify", this.notify.bind(this))
 
         this.init(cardCount)
@@ -16,11 +16,11 @@ class View {
 
     buttonBindregister(self) {
         $('.stack').click(function () {
-            self.stack();
+            self.stackAll();
         });
 
         $('.spread').click(function () {
-            self.spread();
+            self.spreadAll();
         });
 
         $('.shuffle').click(function () {
@@ -53,25 +53,13 @@ class View {
                             .attr("src", "https://deckofcardsapi.com/static/img/AS.png")
                             .attr("alt", "Carta Frente")))))
             .click(function (e) {
-                $.publish('view.clickCarta', { event: e, target: this })
+                $.publish('view.clickCarta', { event: e, target: $(this) })
             })
     }
 
     clickCarta(event, param) {
-        console.log('view.clickCarta', event, param)
-        this.toggleFlip($(param.target))
-    }
-
-    toggleFlip(target) {
-        setTimeout(function () {
-            if (target.hasClass("flip-card-desvirada")) {
-                target.removeClass("flip-card-desvirada")
-                $.publish('view.cartaVirada', target)
-            } else {
-                target.addClass("flip-card-desvirada")
-                $.publish('view.cartaDesvirada', target)
-            }
-        }, 10)
+        //console.log('view.clickCarta', event, param)
+        //this.toggleFlip($(param.target))
     }
 
     init(qtd) {
@@ -82,25 +70,33 @@ class View {
         console.info("cards.length: " + this.cards.length)
         this.cardContainer.append(this.cards)
     }
-    stack() {
+
+    stackAll() {
         this.cards.forEach(function (o, e) {
             setTimeout(function () {
-                o.removeClass("ani" + e)
-                o.removeClass("p1")
-                o.removeClass("p2")
-            }, e * 150)
-        })
+                this.stack(o, e)
+            }.bind(this), e * 150)
+        }.bind(this))
     }
-    spread() {
+
+    stack(target, idx) {
+        target.removeClass("ani" + idx)
+        target.removeClass("p1")
+        target.removeClass("p2")
+    }
+
+    spreadAll() {
         this.cards.forEach(function (o, e) {
             setTimeout(function () {
-                o.removeClass("p1")
-                o.removeClass("p2")
-                o.addClass("ani" + e)
-                $.publish("view.spreadDone")
-                console.info("spread done")
-            }, e * 150)
-        })
+                this.spread(o, e);
+            }.bind(this), e * 150)
+        }.bind(this))
+    }
+
+    spread(target, idx) {
+        target.removeClass("p1")
+        target.removeClass("p2")
+        target.addClass("ani" + idx)
     }
 
     player() {
@@ -134,17 +130,40 @@ class View {
     toogleFlipAll() {
         this.cards.forEach(function (o, e) {
             setTimeout(function () {
-                if (o.hasClass("flip-card-desvirada"))
-                    o.removeClass("flip-card-desvirada")
-                else
-                    o.addClass("flip-card-desvirada")
-            }, e * 150)
-        })
+                this.toggleFlip(o)
+            }.bind(this), e * 150)
+        }.bind(this))
     }
 
-    notify(model) {
-        // if mesa virada == null 
-        // shuffle
+    toggleFlip(target) {
+            if (target.hasClass("flip-card-desvirada"))
+                target.removeClass("flip-card-desvirada")
+            else 
+                target.addClass("flip-card-desvirada")
+    }
+
+    notify(e, model) {
+        if(model.mesaVirada == null || model.mesaDesvirada == null) {
+            this.shuffle()
+        }
+        else {
+            console.dir(model)
+            this.toggleFlip(model.mesaVirada)            
+        }
+
+
+        if(model.vez != null && model.vez.remaining == 1) {
+            $(".lblP1").addClass("vez")
+            $(".lblP2").removeClass("vez")
+        }
+        else if(model.vez != null) {
+            $(".lblP2").addClass("vez")
+            $(".lblP1").removeClass("vez")
+        }
+        
+         
+        model.pilhaJogador1 = null;
+        model.pilhaJogador2 = null;
     }
 
     showDeckId(id) {
