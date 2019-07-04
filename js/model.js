@@ -13,7 +13,8 @@ class Model {
             HASLISTEDP2PILE: "hasListedP2Pile",
             HASLISTEDVEZPILE: "hasListedVezPile",
             HASLISTEDMESAVIRADAPILE: "hasListedMesaViradaPile",
-            HASLISTEDMESADESVIRADAPILE: "hasListedMesaDesviradaPile"
+            HASLISTEDMESADESVIRADAPILE: "hasListedMesaDesviradaPile",
+            UPDATE: "update"
         }
     }
 
@@ -140,7 +141,7 @@ class Model {
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
                 this.deckid = data.deck_id
-                $.publish("model.event" + this.EVENTS.HASSHUFFLED, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASSHUFFLED}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -152,8 +153,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.DRAW_DECK, { count: 1 })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                this.drawnCard = data
-                $.publish("model.event" + this.EVENTS.HASDRAWN, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASDRAWN}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -165,7 +165,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_VEZ, { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish("model.event" + this.EVENTS.HASADDEDTOVEZ, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASADDEDTOVEZ}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -178,7 +178,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_PILHA_P1, { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish("model.event" + this.EVENTS.HASADDEDTOP1, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASADDEDTOP1}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -191,7 +191,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_PILHA_P2, { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish("model.event" + this.EVENTS.HASADDEDTOP2, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASADDEDTOP2}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -204,7 +204,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[payload.idxmesavirada], { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish("model.event" + this.EVENTS.HASADDEDTOMESAVIRADA, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASADDEDTOMESAVIRADA}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -216,7 +216,7 @@ class Model {
         this.consumeDeckApi(this.ACTIONS.ADD_MESA_DESVIRADA[payload.idxmesadesvirada], { cards: payload.card })
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
-                $.publish("model.event" + this.EVENTS.HASADDEDTOMESADESVIRADA, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASADDEDTOMESADESVIRADA}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -229,7 +229,7 @@ class Model {
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
                 this.pilhaJogador1 = data
-                $.publish("model.event" + this.EVENTS.HASLISTEDP1PILE, { model: this, payload })
+                $.publish(`model.event${this.EVENTS.HASLISTEDP1PILE}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -242,11 +242,38 @@ class Model {
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
                 this.pilhaJogador2 = data
-                $.publish("model.event" + this.EVENTS.HASLISTEDP2PILE, { model: this, payload })
+                $.publish(`model.event${this.EVENTS.HASLISTEDP2PILE}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
             })
+    }
+
+    grabP1() {
+        // TODO: LIST P1 PILE TO UPDATE MODEL
+        $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
+
+    }
+
+    grabP2() {
+        // TODO: LIST P2 PILE TO UPDATE MODEL
+        $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
+
+    }
+
+    grabVez() {
+        // TODO: LIST VEZ PILE TO UPDATE MODEL
+        $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
+    }
+
+    grabMesavirada() {
+        // TODO: LIST MESAVIRADA PILE TO UPDATE MODEL
+        $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
+    }
+
+    grabMesaDesvirada() {
+        // TODO: LIST MESADESVIRADA PILE TO UPDATE MODEL
+        $.publish(`model.event.${this.EVENTS.UPDATE}`, { model: this })
     }
 
     listVezPile(p, payload) {
@@ -255,7 +282,7 @@ class Model {
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
                 this.vez = data
-                $.publish("model.event" + this.EVENTS.HASLISTEDVEZPILE, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASLISTEDVEZPILE}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -268,7 +295,7 @@ class Model {
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
                 this.mesaVirada = data
-                $.publish("model.event" + this.EVENTS.HASLISTEDMESAVIRADAPILE, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASLISTEDMESAVIRADAPILE}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
@@ -281,7 +308,7 @@ class Model {
             .done((function (data, textStatus, jqXHR) {
                 console.info(data, textStatus)
                 this.mesaDesvirada = data
-                $.publish("model.event" + this.EVENTS.HASLISTEDMESADESVIRADAPILE, { model: this, payload })
+                $.publish(`model.event.${this.EVENTS.HASLISTEDMESADESVIRADAPILE}`, { model: this, payload })
             }).bind(this))
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR, textStatus, errorThrown)
