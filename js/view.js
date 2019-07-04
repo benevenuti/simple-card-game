@@ -99,16 +99,29 @@ class View {
         target.addClass("ani" + idx)
     }
 
-    player() {
+    playerAll() {
         this.cards.forEach(function (o, e) {
             setTimeout(function () {
-                o.removeClass("ani" + e)
                 if (e % 2 == 0)
-                    o.addClass("p1")
+                    this.player1()
                 else
-                    o.addClass("p2")
-            }, e * 150)
-        })
+                    this.player2()
+            }.bind(this), e * 150)
+        }.bind(this))
+    }
+
+    player1(target, idx) {
+        o.removeClass("ani" + e)
+        o.addClass("p1")
+    }
+
+    player2(target, idx) {
+        o.removeClass("ani" + e)
+        o.addClass("p1")
+    }
+
+    cardImage(target, src) {
+        target.attr("src",src);
     }
 
     shuffle() {
@@ -135,14 +148,22 @@ class View {
         }.bind(this))
     }
 
-    toggleFlip(target) {
-            if (target.hasClass("flip-card-desvirada"))
-                target.removeClass("flip-card-desvirada")
-            else 
-                target.addClass("flip-card-desvirada")
+    flip(target) {
+        target.addClass("flip-card-desvirada")
     }
 
-    notify(e, model) {
+    unflip(target) {
+        target.removeClass("flip-card-desvirada")
+    }
+
+    toggleFlip(target) {
+            if (target.hasClass("flip-card-desvirada"))
+                this.flip(target)
+            else 
+                this.unflip(target)
+    }
+
+    /*notify(e, model) {
         if(model.mesaVirada == null || model.mesaDesvirada == null) {
             this.shuffle()
         }
@@ -162,7 +183,7 @@ class View {
          
         model.pilhaJogador1 = null;
         model.pilhaJogador2 = null;
-    }
+    }*/
 
     showDeckId(id) {
         let str = $('<p>' + id + '</p>')
