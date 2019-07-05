@@ -3,7 +3,7 @@ class View {
         console.info(`view construido`)
 
         this.cardContainer = $(cardContainerId)
-        this.cards = []        
+        this.cards = []
 
         //$.subscribe("model.initialShuffle", this.shuffle.bind(this))
 
@@ -11,7 +11,9 @@ class View {
         //$.subscribe("view.notify", this.notify.bind(this))
 
         $.subscribe("controller.cardDrawnToMesaVirada", this.appendCard.bind(this))
-        
+        $.subscribe("controller.allCardsDrawn", this.shuffle.bind(this))
+        $.subscribe("view.shuffleDone", this.spreadAll.bind(this))
+
         this.buttonBindregister(this)
     }
 
@@ -38,7 +40,7 @@ class View {
     }
 
     geraCard(event, param) {
-        console.info("generate card", param)
+        //console.info("generate card", param)
         return $("<li>").addClass("card").data("indice", param.idx)
             .attr("data-idx", param.idx)
             .attr("data-code", param.card.code)
@@ -61,19 +63,16 @@ class View {
             })
     }
 
-    appendCard(event, params){
+    appendCard(event, params) {
         let cardView = this.geraCard(null, params)
         this.cards.push(cardView)
         this.cardContainer.append(cardView)
-
-        console.log('append', params)
-
-        this.spread($(cardView), params.idx)
+        this.stack($(cardView), params.idx)
     }
 
     clickCarta(event, param) {
         //console.log('view.clickCarta', event, param)
-       this.toggleFlip($(param.target))
+        this.toggleFlip($(param.target))
     }
 
     stackAll() {
@@ -90,12 +89,15 @@ class View {
         target.removeClass("p2")
     }
 
-    spreadAll() {
-        this.cards.forEach(function (o, e) {
-            setTimeout(function () {
-                this.spread(o, e);
-            }.bind(this), e * 150)
-        }.bind(this))
+    spreadAll(event, idx) {
+        //console.info('spreadAll', idx)
+        if (idx == 9) {
+            this.cards.forEach(function (o, e) {
+                setTimeout(function () {
+                    this.spread(o, e);
+                }.bind(this), e * 150)
+            }.bind(this))
+        }
     }
 
     spread(target, idx) {
@@ -117,6 +119,7 @@ class View {
     }
 
     shuffle() {
+        console.info('view.shuffle')
         this.cards.forEach(function (o, e) {
             setTimeout(function () {
                 o.removeClass("ani" + e)
@@ -126,7 +129,7 @@ class View {
                 o.addClass("deck" + deck)
                 setTimeout(function () {
                     o.removeClass("deck" + deck)
-                    //$.publish('view.shuffleDone', e)
+                    $.publish('view.shuffleDone', e)
                 }, e * 100)
             }, e * 100)
         })
@@ -141,30 +144,30 @@ class View {
     }
 
     toggleFlip(target) {
-            if (target.hasClass("flip-card-desvirada"))
-                target.removeClass("flip-card-desvirada")
-            else 
-                target.addClass("flip-card-desvirada")
+        if (target.hasClass("flip-card-desvirada"))
+            target.removeClass("flip-card-desvirada")
+        else
+            target.addClass("flip-card-desvirada")
     }
 
     notify(e, model) {
-        if(model.mesaVirada == null || model.mesaDesvirada == null) {
+        if (model.mesaVirada == null || model.mesaDesvirada == null) {
             this.shuffle()
         }
         else {
             console.dir(model)
-            this.toggleFlip(model.mesaVirada)            
+            this.toggleFlip(model.mesaVirada)
         }
 
-        if(model.vez != null && model.vez.remaining == 1) {
+        if (model.vez != null && model.vez.remaining == 1) {
             $(".lblP1").addClass("vez")
             $(".lblP2").removeClass("vez")
         }
-        else if(model.vez != null) {
+        else if (model.vez != null) {
             $(".lblP2").addClass("vez")
             $(".lblP1").removeClass("vez")
-        }        
-         
+        }
+
         model.pilhaJogador1 = null;
         model.pilhaJogador2 = null;
     }
