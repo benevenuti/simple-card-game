@@ -25,11 +25,10 @@ class View {
         $('.lblPlayer').removeClass('activePlayer')
         $(`.lbl${playerId}`).addClass('activePlayer')
         
-        $('.container-loading.blocker-box').show()
-        $('.loading-label').html(`Vez do ${playerId == 'P1' ? 'Player 1' : 'Player 2'}`).off('click').click(function () {
-            $('.container-loading.blocker-box').hide()
-        })
-        $('.loading-image').hide()
+        //$('.container-loading.blocker-box').show()
+        $('.messages').html(`Vez do ${playerId == 'P1' ? 'Player 1' : 'Player 2'}`)
+            //$('.container-loading.blocker-box').hide()
+        //$('.loading-image').hide()
     }
 
     endGame(event, winnerInfo){
@@ -38,8 +37,8 @@ class View {
         
         $('.container-loading.blocker-box').show()
 
-        let msg = `pontos Player 1 : ${winnerInfo.P1Points}<br>`
-        msg += `pontos Player 2 : ${winnerInfo.P2Points}<br>`
+        let msg = `Pontos Player 1 : ${winnerInfo.P1Points}<br>`
+        msg += `Pontos Player 2 : ${winnerInfo.P2Points}<br>`
         msg += `${winnerInfo.winner == 'TIE' ? 'EMPATE' : 'VENCEDOR: ' + (winnerInfo.winner == 'P1' ? 'Player 1' : 'Player 2') }`
 
         $('.loading-label').html(msg).off('click').click(function () {
@@ -112,6 +111,7 @@ class View {
     }
 
     player1(e, params) {
+        $('.messages').html(`Aizá player 1`)
         let t = $(params.target)
         t.removeClass("ani" + params.idx)
         t.addClass("p1")
@@ -157,10 +157,12 @@ class View {
     }
 
     flip(target) {
+        $('.messages').html(``)
         target.addClass("flip-card-desvirada")
     }
 
     unflip(target) {
+        $('.messages').html(`Patz, são diferentes !!!`)
         target.removeClass("flip-card-desvirada")
     }
 

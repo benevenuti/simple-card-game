@@ -271,3 +271,18 @@ html, body {
   color: chocolate;
   font-size: 42px;
 }
+
+.messages {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.5);
+  width: 350px;
+  height: 50px;
+  padding: 0px 0px 0px 0px;
+  margin: 0;
+  left: calc(calc(100%/2) - 175px);
+  bottom: calc(calc(calc(100%/2) - calc(160px)));
+  color: #000;
+  font-size: 30px;
+  text-align: center;
+  
+}
