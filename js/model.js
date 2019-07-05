@@ -1,6 +1,6 @@
 class Model {
     get DECK_COUNT() {
-        return 2
+        return 1
     }
 
     get BASE_URL() {
@@ -13,7 +13,7 @@ class Model {
     }
     //The suit, one of S (Spades), D (Diamonds), C (Clubs), or H (Hearts).
     get SUITS() {
-        return ["S", "D", "C", "H"]
+        return ["H", "D", "C", "S"]
     }
 
     get DECK_SELECTION() {
@@ -21,26 +21,21 @@ class Model {
             // A
             this.CARDS[0] + this.SUITS[0],
             this.CARDS[0] + this.SUITS[1],
-            //this.CARDS[0] + this.SUITS[2],
-            //this.CARDS[0] + this.SUITS[3],
+            this.CARDS[0] + this.SUITS[2],
+            this.CARDS[0] + this.SUITS[3],
 
+            
             // J
-            //this.CARDS[10] + this.SUITS[0],
-            //this.CARDS[10] + this.SUITS[1],
-            //this.CARDS[10] + this.SUITS[2],
-            this.CARDS[10] + this.SUITS[3],
-
+            this.CARDS[10] + this.SUITS[0],
+            this.CARDS[10] + this.SUITS[1],
+            
             // Q
-            //this.CARDS[11] + this.SUITS[0],
-            //this.CARDS[11] + this.SUITS[1],
-            this.CARDS[11] + this.SUITS[2],
-            //this.CARDS[11] + this.SUITS[3],
-
+            this.CARDS[11] + this.SUITS[0],
+            this.CARDS[11] + this.SUITS[1],
+            
             // K
-            //this.CARDS[12] + this.SUITS[0],
+            this.CARDS[12] + this.SUITS[0],
             this.CARDS[12] + this.SUITS[1],
-            //this.CARDS[12] + this.SUITS[2],
-            //this.CARDS[12] + this.SUITS[3],
         ]
     }
 
@@ -172,7 +167,7 @@ class Model {
     }
 
     async drawFromMesaVirada(idx) {
-        return await this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[idx], {})
+        return await this.consumeDeckApi(this.ACTIONS.DRAW_MESA_VIRADA[idx], {})
     }
 
     async addToMesaDesvirada(idx, card) {
@@ -180,7 +175,7 @@ class Model {
     }
 
     async drawFromMesaDesvirada(idx) {
-        return await this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[idx], {})
+        return await this.consumeDeckApi(this.ACTIONS.DRAW_MESA_VIRADA[idx], {})
     }
 
     async _listPlayer1Pile() {
@@ -203,23 +198,23 @@ class Model {
         return ret
     }
 
-    async _listMesaViradaPile() {
-        return await this.consumeDeckApi(this.ACTIONS.LIST_MESA_VIRADA, {})
+    async _listMesaViradaPile(idx) {
+        return await this.consumeDeckApi(this.ACTIONS.LIST_MESA_VIRADA[idx], {})
     }
 
-    async listMesaViradaPile() {
-        let ret = await this._listMesaViradaPile()
-        this.mesaVirada = ret.data
+    async listMesaViradaPile(idx) {
+        let ret = await this._listMesaViradaPile(idx)
+        this.mesaVirada[idx] = ret.piles[`mesavirada${idx}`]
         return ret
     }
 
-    async _listMesaDesviradaPile() {
-       return await this.consumeDeckApi(this.ACTIONS.LIST_MESA_DESVIRADA, {})
+    async _listMesaDesviradaPile(idx) {
+       return await this.consumeDeckApi(this.ACTIONS.LIST_MESA_DESVIRADA[idx], {})
     }
 
-    async listMesaDesviradaPile() {
-        let ret = await this._listMesaDesviradaPile()
-        this.mesaDesvirada = ret.data
+    async listMesaDesviradaPile(idx) {
+        let ret = await this._listMesaDesviradaPile(idx)
+        this.mesaDesvirada[idx] = ret.piles[`mesadesvirada${idx}`]
         return ret
     }
 

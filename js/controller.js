@@ -23,12 +23,15 @@ class Controller {
         let remaining = ret.remaining
 
         for (let idx = 0; idx < remaining; idx++) {
-            if(idx%2==0)$.publish('view.shuffle', {})
+            if(idx%3==0)$.publish('view.shuffle', {})
             // pega carta do novo deck 
             let drawn = await this.Model.draw()
             let card = drawn.cards[0]
             //remaining = drawn.data.remaining
             // adiciona a carta para a pilha de cartas viradas
+            console.log(`--->>> `)
+            console.dir(card)
+            console.log(`--->>> `)
             await this.Model.addToMesaVirada(idx, card.code)
 
             await this.Model.listMesaViradaPile(idx)
@@ -120,14 +123,19 @@ class Controller {
         
         let indice = $(payload.target).data("indice")
         console.info(`chamou view.clickCarta`)
-        console.dir(payload.target)
-        console.dir(this.Model.mesaVirada[indice])
 
         if(this.Model.mesaVirada != null && this.Model.mesaVirada[indice].remaining > 0) {
             if(this.Model.mesaDesvirada[indice] == null || (this.Model.mesaDesvirada[indice] != null && this.Model.mesaDesvirada.filter(o => o.remaining > 0).length < 2)) {
-                let carta = await this.Model.drawFromMesaVirada(indice)                
-                await this.Model.addToMesaDesvirada(indice, carta)
-                await this.Model.listMesaDesviradaPile(indice)
+                //let carta = 
+                this.Model.drawFromMesaVirada(indice)
+                    .then(
+                        (carta) => this.Model.addToMesaDesvirada(indice, carta.cards[0].code)
+                    )
+                    .then(
+                        () => this.Model.listMesaDesviradaPile(indice)
+                    )
+                
+                
             }
         }
     }
