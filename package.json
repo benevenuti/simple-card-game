@@ -4,7 +4,8 @@
   "description": "Consumes Deck of Cards API",
   "main": "index.js",
   "scripts": {
-    "dev": "http-server"
+    "dev": "http-server",
+    "start" : "node_modules/.bin/http-server"
   },
   "repository": {
     "type": "git",
