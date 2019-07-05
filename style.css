@@ -44,7 +44,6 @@ html, body {
 }
 
 .card {
-
     transition: all 0.5s cubic-bezier(0.68,-.55,.265,1.55);
     
     perspective: 1000;
@@ -64,7 +63,8 @@ html, body {
 }
 
 .card:nth-child(10n) .flip-card-inner {
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
 .card.deck1 {
@@ -209,6 +209,7 @@ html, body {
 .card.ani8 .flip-card-inner
  {
 
+   border-radius: 5px;
    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
 
 }
@@ -234,12 +235,17 @@ html, body {
 }
 
 .flip-card-front {
-  background-color: #bbb;
+  /*background-color: #bbb;*/
+  background-image: url("card-back-orange.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
   color: black;
 }
 
 .flip-card-back {
-  background-color: dodgerblue;
+  /*background-color: dodgerblue;*/
   color: white;
   transform: rotateY(180deg);
 }
