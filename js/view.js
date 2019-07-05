@@ -51,9 +51,10 @@ class View {
             .append($("<div>").addClass("flip-card")
                 .append($("<div>").addClass("flip-card-inner")
                     .append($("<div>").addClass("flip-card-front")
-                        .append($("<img>").addClass("imgCarta")
+                        /*.append($("<img>").addClass("imgCarta")
                             .attr("src", "card-back-orange.png")
-                            .attr("alt", `Fundo - ${param.card.value} of ${param.card.suit}`)))
+                            .attr("alt", `Fundo - ${param.card.value} of ${param.card.suit}`))*/
+                        )
                     .append($("<div>").addClass("flip-card-back")
                         .append($("<img>").addClass("imgCarta")
                             .attr("src", `${param.card.images.png}`)
