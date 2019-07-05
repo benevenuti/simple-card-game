@@ -236,6 +236,7 @@ html, body {
 
 .flip-card-front {
   /*background-color: #bbb;*/
+  border-radius: 5px;
   background-image: url("card-back-orange.png");
   background-size: cover;
   background-position: center;
