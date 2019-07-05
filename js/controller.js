@@ -10,8 +10,13 @@ class Controller {
 
     inicializa() {
         console.info(`controller inicializado`)
-        $.subscribe('view.clickCarta', this.clickCarta.bind(this))
+        $.subscribe('view.clickCarta', this.clickCarta.bind(this) )
+        $.subscribe('view.spreadDone', this.playerInfo.bind(this) )
         this.embaralha()
+    }
+
+    playerInfo(event, param){
+        $.publish('controller.trocouVez', this.Model.vez)
     }
 
     async embaralha() {
@@ -34,14 +39,16 @@ class Controller {
         $.publish('controller.allCardsDrawn', {})
     }
 
+    //setTimeout(() => $.publish('controller.trocouVez', 'P1'), 9 * 150)
+
     verificaDesvirada() {
 
         // remove das desviradas
         let card1 = this.Model.drawFromMesaDesvirada()
         let card0 = this.Model.drawFromMesaDesvirada()
 
-        console.log(`card0`, card0)
-        console.log(`card1`, card1)
+        //console.log(`card0`, card0)
+        //console.log(`card1`, card1)
 
         //sendo iguais, move para a pilha do player ativo
         if (card0.card == card1.card) {
@@ -70,23 +77,29 @@ class Controller {
         if (this.jogoDeveContinuar()) {
             this.trocaVez()
         } else {
-            this.calculaVencedor()
+            $.publish('controller.endGame', this.calculaVencedor())            
         }
 
     }
 
     jogoDeveContinuar() {
-        return ((this.Model.pilhaJogador1.length + this.Model.pilhaJogador2.length) < this.Model.TOTAL_CARD_COUNT)
+        let p1 = this.Model.pilhaJogador1.length
+        let p2 = this.Model.pilhaJogador2.length
+        return ((p1 + p2) < this.Model.TOTAL_CARD_COUNT)
     }
 
     calculaVencedor() {
-        if (this.Model.pilhaJogador1.length > this.Model.pilhaJogador2.length) {
-            return this.Model.P1
-        } else if (this.Model.pilhaJogador1.length < this.Model.pilhaJogador2.length) {
-            return this.Model.P2
+        let winner = null
+        let p1 = this.Model.pilhaJogador1.length
+        let p2 = this.Model.pilhaJogador2.length
+        if (p1 > p2) {
+            winner = this.Model.P1
+        } else if (p1 < p2) {
+            winner = this.Model.P2
         } else {
-            return "TIE"
+            winner = "TIE"
         }
+        return {winner : winner, "P1Points" : p1, "P2Points" : p2}
     }
 
     trocaVez() {
@@ -96,7 +109,7 @@ class Controller {
             this.Model.vez = this.Model.P1
         }
 
-        $.publish('controller.trocouVez')
+        $.publish('controller.trocouVez', this.Model.vez)
     }
 
     async clickCarta(e, payload) {

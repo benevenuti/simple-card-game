@@ -170,6 +170,7 @@ html, body {
   background-color: #0F0;
 }
 
+
 .lblP1 {
     position: absolute;
     background-color: #fff;
@@ -188,6 +189,10 @@ html, body {
     margin: 0;
     right: calc(100% - 110px);
     bottom: calc(calc(calc(100%/2) - calc(150px/2)) - calc(50px/2));
+}
+
+.activePlayer {
+  background-color: chocolate;
 }
 
 .flip-card {
@@ -249,4 +254,20 @@ html, body {
   /*background-color: dodgerblue;*/
   color: white;
   transform: rotateY(180deg);
+}
+
+/* Loading */
+.blocker-box { 
+  position: fixed; top:0;bottom:0;left:0;right:0; background-color:rgba(255,255,255,0.5); z-index: 9000;
+}
+.container-loading {
+  position: fixed;width: 100%;height:100%;background-color: rgba(255, 255, 255, 0.7); display: block;z-index: 99999
+}
+.loading {
+  position: relative;top: calc(50% - 128px);background-color: rgba(255,255,255,0.0);z-index: 9999;display: block;text-align: center;
+}
+/*.loading label {margin-left: -34px;}*/
+.loading-label {
+  color: chocolate;
+  font-size: 42px;
 }

@@ -15,7 +15,37 @@ class View {
         $.subscribe('controller.addToP1', this.player1.bind(this))
         $.subscribe('controller.addToP2', this.player2.bind(this))
 
+        $.subscribe('controller.trocouVez', this.trocouVez.bind(this))
+
+        $.subscribe('controller.endGame', this.endGame.bind(this))
+
     }
+
+    trocouVez(event, playerId){        
+        $('.lblPlayer').removeClass('activePlayer')
+        $(`.lbl${playerId}`).addClass('activePlayer')
+        
+        $('.container-loading.blocker-box').show()
+        $('.loading-label').html(`Vez do ${playerId == 'P1' ? 'Player 1' : 'Player 2'}`).off('click').click(function () {
+            $('.container-loading.blocker-box').hide()
+        })
+        $('.loading-image').hide()
+    }
+
+    endGame(event, winnerInfo){
+        console.info(winnerInfo)
+        $('.lblPlayer').removeClass('activePlayer')
+        
+        $('.container-loading.blocker-box').show()
+
+        let msg = `pontos Player 1 : ${winnerInfo.P1Points}<br>`
+        msg += `pontos Player 2 : ${winnerInfo.P2Points}<br>`
+        msg += `${winnerInfo.winner == 'TIE' ? 'EMPATE' : 'VENCEDOR: ' + (winnerInfo.winner == 'P1' ? 'Player 1' : 'Player 2') }`
+
+        $('.loading-label').html(msg).off('click').click(function () {
+            document.location.reload()
+        })
+    }    
 
     geraCard(event, param) {
         //console.info("generate card", param)
@@ -71,6 +101,7 @@ class View {
                     this.spread(o, e);
                 }.bind(this), e * 150)
             }.bind(this))
+            setTimeout(() => $.publish('view.spreadDone'), 9 * 150)
         }
     }
 

@@ -5,13 +5,13 @@ function iniciarSimpleCardGame() {
 
     // registra os eventos globais
     $(document).bind('ajaxStart', function (event) {
-        console.info(`${event.type}`)
-        // meter aqui um loading massa
+        //console.info(`${event.type}`)
+        $('.container-loading.blocker-box').show()
     })
 
     $(document).bind('ajaxComplete', function (event, jqXHR, settings) {
         console.info(`${event.type} >> ${decodeURI(settings.url)}`)
-        // esconder o loading
+        $('.container-loading.blocker-box').hide()
     })
 
     // init app
