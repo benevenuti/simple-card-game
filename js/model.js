@@ -109,7 +109,6 @@ class Model {
         this.pilhaJogador2 = null
     }
 
-    // not working
     consumeDeckApi(action, paramsObj) {
         let myUrl = this.BASE_URL + action
         let ret = null
@@ -156,12 +155,20 @@ class Model {
         return this.consumeDeckApi(this.ACTIONS.ADD_PILHA_P2, { cards: card })
     }
 
-    addToMesaVirada(card) {
-        return this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[payload.indice], { cards: card })
+    addToMesaVirada(idx, card) {
+        return this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[idx], { cards: card })
     }
 
-    addToMesaDesvirada(card) {
-        return this.consumeDeckApi(this.ACTIONS.ADD_MESA_DESVIRADA[payload.indice], { cards: card })
+    drawFromMesaVirada(idx) {
+        return this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[idx], {})
+    }
+
+    addToMesaDesvirada(idx, card) {
+        return this.consumeDeckApi(this.ACTIONS.ADD_MESA_DESVIRADA[idx], { cards: card })
+    }
+
+    drawFromMesaDesvirada(idx) {
+        return this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[idx], {})
     }
 
     listPlayer1Pile() {
