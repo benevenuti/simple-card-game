@@ -181,32 +181,42 @@ class Model {
         return await this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[idx], {})
     }
 
+    async _listPlayer1Pile() {
+        return await this.consumeDeckApi(this.ACTIONS.LIST_PILHA_P1, {})
+    }
+
     async listPlayer1Pile() {
-        let ret = await this.consumeDeckApi(this.ACTIONS.LIST_PILHA_P1, {})
+        let ret = await _listPlayer1Pile()
         this.pilhaJogador1 = ret.data
         return ret
     }
 
+    async _listPlayer2Pile() {
+        return await this.consumeDeckApi(this.ACTIONS.LIST_PILHA_P2, {})
+    }
+
     async listPlayer2Pile() {
-        let ret = await this.consumeDeckApi(this.ACTIONS.LIST_PILHA_P2, {})
-        this.pilhaJogador2 = ret.data
+        let ret = await _listPlayer2Pile()
+        this.pilhaJogador1 = ret.data
         return ret
     }
 
-    async listVezPile() {
-        let ret = await this.consumeDeckApi(this.ACTIONS.LIST_VEZ, {})
-        this.vez = ret.data
-        return ret
+    async _listMesaViradaPile() {
+        return await this.consumeDeckApi(this.ACTIONS.LIST_MESA_VIRADA, {})
     }
 
     async listMesaViradaPile() {
-        let ret = await this.consumeDeckApi(this.ACTIONS.LIST_MESA_VIRADA, {})
+        let ret = await this._listMesaViradaPile()
         this.mesaVirada = ret.data
         return ret
     }
 
+    async _listMesaDesviradaPile() {
+       return await this.consumeDeckApi(this.ACTIONS.LIST_MESA_DESVIRADA, {})
+    }
+
     async listMesaDesviradaPile() {
-        let ret = await this.consumeDeckApi(this.ACTIONS.LIST_MESA_DESVIRADA, {})
+        let ret = await this._listMesaDesviradaPile()
         this.mesaDesvirada = ret.data
         return ret
     }
