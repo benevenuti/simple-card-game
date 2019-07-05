@@ -49,51 +49,16 @@ class Model {
     }
 
     get P1() {
-        // 7S
-        return this.CARDS[6] + this.SUITS[0]
+        return "P1"
     }
     get P2() {
-        // 8S
-        return this.CARDS[7] + this.SUITS[0]
+        return "P2"
     }
 
     get ACTIONS() {
         return {
             SHUFFLE_DECK: "deck/new/shuffle/",
-            DRAW_DECK: `deck/${this.deckid}/draw/`,
-            ADD_MESA_VIRADA:
-                ' '.repeat((this.TOTAL_CARD_COUNT) - 1).split(' ').map(function (o, i) {
-                    return `deck/${this.deckid}/pile/mesavirada${i}/add/`
-                }.bind(this)),
-            DRAW_MESA_VIRADA:
-                ' '.repeat((this.TOTAL_CARD_COUNT) - 1).split(' ').map(function (o, i) {
-                    return `deck/${this.deckid}/pile/mesavirada${i}/draw/`
-                }.bind(this)),
-            ADD_MESA_DESVIRADA:
-                ' '.repeat((this.TOTAL_CARD_COUNT) - 1).split(' ').map(function (o, i) {
-                    return `deck/${this.deckid}/pile/mesadesvirada${i}/add/`
-                }.bind(this)),
-            DRAW_MESA_DESVIRADA:
-                ' '.repeat((this.TOTAL_CARD_COUNT) - 1).split(' ').map(function (o, i) {
-                    return `deck/${this.deckid}/pile/mesadesvirada${i}/draw/`
-                }.bind(this)),
-            ADD_VEZ: `deck/${this.deckid}/pile/vez/add/`,
-            DRAW_VEZ: `deck/${this.deckid}/pile/vez/draw/`,
-            ADD_PILHA_P1: `deck/${this.deckid}/pile/p1/add/`,
-            ADD_PILHA_P2: `deck/${this.deckid}/pile/p2/add/`,
-            DRAW_PILHA_P1: `deck/${this.deckid}/pile/p1/draw/`,
-            DRAW_PILHA_P2: `deck/${this.deckid}/pile/p2/draw/`,
-            LIST_MESA_VIRADA:
-                ' '.repeat((this.TOTAL_CARD_COUNT) - 1).split(' ').map(function (o, i) {
-                    return `deck/${this.deckid}/pile/mesavirada${i}/list/`
-                }.bind(this)),
-            LIST_MESA_DESVIRADA:
-                ' '.repeat((this.TOTAL_CARD_COUNT) - 1).split(' ').map(function (o, i) {
-                    return `deck/${this.deckid}/pile/mesadesvirada${i}/list/`
-                }.bind(this)),
-            LIST_VEZ: `deck/${this.deckid}/pile/vez/list/`,
-            LIST_PILHA_P1: `deck/${this.deckid}/pile/p1/list/`,
-            LIST_PILHA_P2: `deck/${this.deckid}/pile/p2/list/`
+            DRAW_DECK: `deck/${this.deckid}/draw/`
         }
     }
 
@@ -102,11 +67,11 @@ class Model {
 
         this.deckid = deckid
 
-        this.mesaVirada = null
-        this.mesaDesvirada = null
-        this.vez = null
-        this.pilhaJogador1 = null
-        this.pilhaJogador2 = null
+        this.mesaVirada = []
+        this.mesaDesvirada = []
+        this.vez = this.P1
+        this.pilhaJogador1 = []
+        this.pilhaJogador2 = []
     }
 
     async consumeDeckApi(action, paramsObj) {
@@ -114,29 +79,20 @@ class Model {
         let ret = null
 
         try {
+            //ret = await $.get({
             ret = await $.ajax({
                 url: myUrl,
-                //async: false,
                 type: 'GET',
                 data: paramsObj
             })
         } catch (e) {
             console.error(e)
         }
-        
-        /*.done(function (data, textStatus, jqXHR) {
-            console.info('ajax done', data, textStatus, jqXHR)
-            ret = { data: data, textStatus: textStatus }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            console.error('ajax fail', jqXHR, textStatus, errorThrown)
-            ret = { data: null, textStatus: textStatus }
-        })*/
-
         return ret
     }
 
     async generateDeck() {
-        return await this.consumeDeckApi(this.ACTIONS.SHUFFLE_DECK, { deck_count: this.DECK_COUNT, cards: this.DECK_SELECTION.join(",") })        
+        return await this.consumeDeckApi(this.ACTIONS.SHUFFLE_DECK, { deck_count: this.DECK_COUNT, cards: this.DECK_SELECTION.join(",") })
     }
 
     async shuffle() {
@@ -149,76 +105,31 @@ class Model {
         return await this.consumeDeckApi(this.ACTIONS.DRAW_DECK, { count: 1 })
     }
 
-    async addToVez(card) {
-        return await this.consumeDeckApi(this.ACTIONS.ADD_VEZ, { cards: card })
+    addToP1(obj) {
+        this.pilhaJogador1.push(obj)
     }
 
-    async drawFromVez(card) {
-        return await this.consumeDeckApi(this.ACTIONS.DRAW_VEZ, { cards: card })
+    addToP2(obj) {
+        this.pilhaJogador2.push(obj)
     }
 
-    async addToP1(card) {
-        return await this.consumeDeckApi(this.ACTIONS.ADD_PILHA_P1, { cards: card })
+    addToMesaVirada(idx, card) {
+        this.mesaVirada[idx] = card
     }
 
-    async addToP2(card) {
-        return await this.consumeDeckApi(this.ACTIONS.ADD_PILHA_P2, { cards: card })
+    drawFromMesaVirada(idx) {
+        let card = this.mesaVirada[idx]
+        this.mesaVirada[idx] = null
+        return card
     }
 
-    async addToMesaVirada(idx, card) {
-        return await this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[idx], { cards: card })
+    addToMesaDesvirada(obj) {
+        this.mesaDesvirada.push(obj)
     }
 
-    async drawFromMesaVirada(idx) {
-        return await this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[idx], {})
-    }
-
-    async addToMesaDesvirada(idx, card) {
-        return await this.consumeDeckApi(this.ACTIONS.ADD_MESA_DESVIRADA[idx], { cards: card })
-    }
-
-    async drawFromMesaDesvirada(idx) {
-        return await this.consumeDeckApi(this.ACTIONS.ADD_MESA_VIRADA[idx], {})
-    }
-
-    async _listPlayer1Pile() {
-        return await this.consumeDeckApi(this.ACTIONS.LIST_PILHA_P1, {})
-    }
-
-    async listPlayer1Pile() {
-        let ret = await _listPlayer1Pile()
-        this.pilhaJogador1 = ret.data
-        return ret
-    }
-
-    async _listPlayer2Pile() {
-        return await this.consumeDeckApi(this.ACTIONS.LIST_PILHA_P2, {})
-    }
-
-    async listPlayer2Pile() {
-        let ret = await _listPlayer2Pile()
-        this.pilhaJogador1 = ret.data
-        return ret
-    }
-
-    async _listMesaViradaPile() {
-        return await this.consumeDeckApi(this.ACTIONS.LIST_MESA_VIRADA, {})
-    }
-
-    async listMesaViradaPile() {
-        let ret = await this._listMesaViradaPile()
-        this.mesaVirada = ret.data
-        return ret
-    }
-
-    async _listMesaDesviradaPile() {
-       return await this.consumeDeckApi(this.ACTIONS.LIST_MESA_DESVIRADA, {})
-    }
-
-    async listMesaDesviradaPile() {
-        let ret = await this._listMesaDesviradaPile()
-        this.mesaDesvirada = ret.data
-        return ret
+    drawFromMesaDesvirada() {
+        let card = this.mesaDesvirada.pop()
+        return card
     }
 
 }

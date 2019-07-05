@@ -5,38 +5,16 @@ class View {
         this.cardContainer = $(cardContainerId)
         this.cards = []
 
-        //$.subscribe("model.initialShuffle", this.shuffle.bind(this))
-
-        $.subscribe("view.clickCarta", this.clickCarta.bind(this)) // vai mudar para op controller
-        //$.subscribe("view.notify", this.notify.bind(this))
-
         $.subscribe("controller.cardDrawnToMesaVirada", this.appendCard.bind(this))
         $.subscribe("controller.allCardsDrawn", this.shuffle.bind(this))
         $.subscribe("view.shuffleDone", this.spreadAll.bind(this))
 
-        this.buttonBindregister(this)
-    }
+        $.subscribe('controller.toggleFlip', this.flipCard.bind(this))
+        $.subscribe('controller.toggleUnflip', this.unflipCard.bind(this))
 
-    buttonBindregister(self) {
-        $('.stack').click(function () {
-            self.stackAll();
-        });
+        $.subscribe('controller.addToP1', this.player1.bind(this))
+        $.subscribe('controller.addToP2', this.player2.bind(this))
 
-        $('.spread').click(function () {
-            self.spreadAll();
-        });
-
-        $('.shuffle').click(function () {
-            self.shuffle();
-        });
-
-        $('.flip').click(function () {
-            self.toogleFlipAll();
-        });
-
-        $('.player').click(function () {
-            self.player();
-        });
     }
 
     geraCard(event, param) {
@@ -71,11 +49,6 @@ class View {
         this.stack($(cardView), params.idx)
     }
 
-    clickCarta(event, param) {
-        //console.log('view.clickCarta', event, param)
-        this.toggleFlip($(param.target))
-    }
-
     stackAll() {
         this.cards.forEach(function (o, e) {
             setTimeout(function () {
@@ -107,29 +80,16 @@ class View {
         target.addClass("ani" + idx)
     }
 
-    playerAll() {
-        this.cards.forEach(function (o, e) {
-            setTimeout(function () {
-                if (e % 2 == 0)
-                    this.player1()
-                else
-                    this.player2()
-            }.bind(this), e * 150)
-        }.bind(this))
+    player1(e, params) {
+        let t = $(params.target)
+        t.removeClass("ani" + params.idx)
+        t.addClass("p1")
     }
 
-    player1(target, idx) {
-        o.removeClass("ani" + e)
-        o.addClass("p1")
-    }
-
-    player2(target, idx) {
-        o.removeClass("ani" + e)
-        o.addClass("p1")
-    }
-
-    cardImage(target, src) {
-        target.attr("src",src);
+    player2(e, params) {
+        let t = $(params.target)
+        t.removeClass("ani" + params.idx)
+        t.addClass("p2")
     }
 
     shuffle() {
@@ -157,6 +117,14 @@ class View {
         }.bind(this))
     }
 
+    flipCard(e, target){
+        this.flip($(target))
+    }
+
+    unflipCard(e, target){
+        this.unflip($(target))
+    }
+
     flip(target) {
         target.addClass("flip-card-desvirada")
     }
@@ -172,28 +140,6 @@ class View {
                 this.flip(target) 
                 
     }
-
-    /*notify(e, model) {
-        if(model.mesaVirada == null || model.mesaDesvirada == null) {
-            this.shuffle()
-        }
-        else {
-            console.dir(model)
-            this.toggleFlip(model.mesaVirada)
-        }
-
-        if (model.vez != null && model.vez.remaining == 1) {
-            $(".lblP1").addClass("vez")
-            $(".lblP2").removeClass("vez")
-        }
-        else if (model.vez != null) {
-            $(".lblP2").addClass("vez")
-            $(".lblP1").removeClass("vez")
-        }
-
-        model.pilhaJogador1 = null;
-        model.pilhaJogador2 = null;
-    }*/
 
     showDeckId(id) {
         let str = $('<p>' + id + '</p>')

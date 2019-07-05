@@ -20,9 +20,7 @@ class Controller {
         // solicita novo deck para o model
         let ret = await this.Model.shuffle()
 
-        let remaining = ret.remaining
-
-        for (let idx = 0; idx < remaining; idx++) {
+        for (let idx = 0; idx < ret.remaining; idx++) {
             // pega carta do novo deck 
             let drawn = await this.Model.draw()
             let card = drawn.cards[0]
@@ -30,91 +28,94 @@ class Controller {
             // adiciona a carta para a pilha de cartas viradas
             this.Model.addToMesaVirada(idx, card.code)
             // publica o evento da carta, quem ouve é a view
-            $.publish('controller.cardDrawnToMesaVirada', { idx : idx, card : card } )            
+            $.publish('controller.cardDrawnToMesaVirada', { idx: idx, card: card })
         }
 
-        $.publish('controller.allCardsDrawn', {})            
-
-        
+        $.publish('controller.allCardsDrawn', {})
     }
 
-    addToMesaVirada() {
-        $.publish("model.addToMesaDesvirada", {publish: "model.initialShuffle"});
-    }
+    verificaDesvirada() {
 
-    addToMesaVirada() {
-        $.publish("model.addToMesaVirada", {publish: "model.initialShuffle"});
-    }
+        // remove das desviradas
+        let card1 = this.Model.drawFromMesaDesvirada()
+        let card0 = this.Model.drawFromMesaDesvirada()
 
-    addToP1() {
-        $.publish("model.addToP1", {publish: "model.initialShuffle"});
-    }
+        console.log(`card0`, card0)
+        console.log(`card1`, card1)
 
-    addToP2() {
-        $.publish("model.addToP2", {publish: "model.initialShuffle"});
-    }
+        //sendo iguais, move para a pilha do player ativo
+        if (card0.card == card1.card) {
 
-    addToVez() {
-        $.publish("model.addToVez", {publish: "model.initialShuffle"});
-    }
-
-    draw() {
-        $.publish("model.draw", {publish: "model.initialShuffle"});
-    }
-
-    
-    jogar() {
-
-    }
-
-
-
-    verificaDesvirada(event, obj) {
-        console.info(`chamou model.event.${this.Model.EVENTS.HASADDTOMESADESVIRADA}`)
-        let idxs = [];
-        let desviradas = this.Model.mesaDesvirada.filter(
-            (o, i) => { 
-                idxs.push(i);
-                return o.remaining > 0
-            }
-        );
-        if(this.Model.mesaDesvirada != null && desviradas.length >= 2) {
-            if(desviradas[0].cards[0].code == desviradas[1].cards[0].code) {
-                if(this.Model.vez != null && this.Model.vez.remaining == 1) {
-                    $.publish("model.addToP1", {indice: idxs[0]});
-                    $.publish("model.addToP1", {indice: idxs[1]});
-                } else {
-                    $.publish("model.addToP2", {indice: idxs[0]});
-                    $.publish("model.addToP2", {indice: idxs[1]});
-                }
+            // se P1
+            if (this.Model.vez == this.Model.P1) {
+                this.Model.addToP1(card1)
+                $.publish('controller.addToP1', { idx: card1.idx, target: card1.target })
+                this.Model.addToP1(card0)
+                $.publish('controller.addToP1', { idx: card0.idx, target: card0.target })
+                // se P2
             } else {
-                let carta = this.Model.drawFromMesaDesvirada(idxs[0])                
-                this.Model.addToMesaVirada(carta)
-                carta = this.Model.drawFromMesaDesvirada(idxs[1])                
-                this.Model.addToMesaVirada(carta)
+                this.Model.addToP2(card1)
+                $.publish('controller.addToP2', { idx: card1.idx, target: card1.target })
+                this.Model.addToP2(card0)
+                $.publish('controller.addToP2', { idx: card0.idx, target: card0.target })
             }
+            //sendo diferentes
+        } else {
+            this.Model.addToMesaVirada(card0.idx, card0.card)
+            $.publish('controller.toggleUnflip', card0.target)
+            this.Model.addToMesaVirada(card1.idx, card1.card)
+            $.publish('controller.toggleUnflip', card1.target)
+        }
 
-            if(this.Model.vez != null && this.Model.vez.remaining == 1)
-                $.publish("model.drawFromVez", {cards: this.Model.TURN_CONTROLLER_CARD});
-            else
-                $.publish("model.addToVez", {cards: this.Model.TURN_CONTROLLER_CARD});
+        if (this.jogoDeveContinuar()) {
+            this.trocaVez()
+        } else {
+            this.calculaVencedor()
+        }
+
+    }
+
+    jogoDeveContinuar() {
+        return ((this.Model.pilhaJogador1.length + this.Model.pilhaJogador2.length) < this.Model.TOTAL_CARD_COUNT)
+    }
+
+    calculaVencedor() {
+        if (this.Model.pilhaJogador1.length > this.Model.pilhaJogador2.length) {
+            return this.Model.P1
+        } else if (this.Model.pilhaJogador1.length < this.Model.pilhaJogador2.length) {
+            return this.Model.P2
+        } else {
+            return "TIE"
         }
     }
 
-    update(event, obj) {
-        console.info(`chamou model.event`)
-        $.publish("view.notify", {obj})
+    trocaVez() {
+        if (this.Model.vez == this.Model.P1) {
+            this.Model.vez = this.Model.P2
+        } else {
+            this.Model.vez = this.Model.P1
+        }
+
+        $.publish('controller.trocouVez')
     }
 
-    clickCarta(e, payload) {
-        console.info(`chamou view.clickCarta`)
-        console.dir(payload)
-        if(this.Model.mesaVirada != null && this.Model.mesaVirada[payload.target.data("indice")].remaining > 0) {
-            if(this.Model.mesaDesvirada != null && this.Model.mesaDesvirada.filter(o => o.remaining > 0).length < 2) {
-                let carta = this.Model.drawFromMesaVirada(payload.target.data("indice"))                
-                this.Model.addToMesaDesvirada(carta)
-                //TODO: busca mesa desvirada
+    async clickCarta(e, payload) {
+        let idx = $(payload.target[0]).data("idx")
+
+        if (this.Model.mesaVirada[idx] != null) {
+            if (this.Model.mesaDesvirada.length < 2) {
+                let card = this.Model.drawFromMesaVirada(idx)
+                this.Model.addToMesaDesvirada({ idx: idx, card: card, target: payload.target[0]})
+                $.publish('controller.toggleFlip', $(payload.target[0]))
             }
+
+            if (this.Model.mesaDesvirada.length == 2) {
+                setTimeout(function () {
+                    this.verificaDesvirada()
+                }.bind(this), 2000 )
+            }
+        } else {
+            console.warn(`o idx ${idx} já foi virado`)
         }
     }
 }
