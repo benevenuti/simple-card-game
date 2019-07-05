@@ -23,17 +23,27 @@ class Controller {
         let remaining = ret.remaining
 
         for (let idx = 0; idx < remaining; idx++) {
+            if(idx%2==0)$.publish('view.shuffle', {})
             // pega carta do novo deck 
             let drawn = await this.Model.draw()
             let card = drawn.cards[0]
             //remaining = drawn.data.remaining
             // adiciona a carta para a pilha de cartas viradas
-            this.Model.addToMesaVirada(idx, card.code)
+            await this.Model.addToMesaVirada(idx, card.code)
+
+            await this.Model.listMesaViradaPile(idx)
+            await this.Model.listMesaDesviradaPile(idx)
+
             // publica o evento da carta, quem ouve é a view
             $.publish('controller.cardDrawnToMesaVirada', { idx : idx, card : card } )            
+
+
         }
 
-        $.publish('controller.allCardsDrawn', {})            
+        console.dir(this.Model);
+
+        //$.publish('controller.allCardsDrawn', {})
+        $.publish('view.shuffleDone', {})
 
         
     }
@@ -107,13 +117,17 @@ class Controller {
     }
 
     clickCarta(e, payload) {
+        
+        let indice = $(payload.target).data("indice")
         console.info(`chamou view.clickCarta`)
-        console.dir(payload)
-        if(this.Model.mesaVirada != null && this.Model.mesaVirada[payload.target.data("indice")].remaining > 0) {
-            if(this.Model.mesaDesvirada != null && this.Model.mesaDesvirada.filter(o => o.remaining > 0).length < 2) {
-                let carta = this.Model.drawFromMesaVirada(payload.target.data("indice"))                
-                this.Model.addToMesaDesvirada(carta)
-                //TODO: busca mesa desvirada
+        console.dir(payload.target)
+        console.dir(this.Model.mesaVirada[indice])
+
+        if(this.Model.mesaVirada != null && this.Model.mesaVirada[indice].remaining > 0) {
+            if(this.Model.mesaDesvirada[indice] == null || (this.Model.mesaDesvirada[indice] != null && this.Model.mesaDesvirada.filter(o => o.remaining > 0).length < 2)) {
+                let carta = await this.Model.drawFromMesaVirada(indice)                
+                await this.Model.addToMesaDesvirada(indice, carta)
+                await this.Model.listMesaDesviradaPile(indice)
             }
         }
     }

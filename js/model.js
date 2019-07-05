@@ -102,8 +102,10 @@ class Model {
 
         this.deckid = deckid
 
-        this.mesaVirada = null
-        this.mesaDesvirada = null
+        //inicializando mesavirada e desvirada
+        this.mesaVirada = ' '.repeat((this.TOTAL_CARD_COUNT) - 1).split(' ').map(o => null)
+        this.mesaDesvirada = ' '.repeat((this.TOTAL_CARD_COUNT) - 1).split(' ').map(o => null)
+
         this.vez = null
         this.pilhaJogador1 = null
         this.pilhaJogador2 = null

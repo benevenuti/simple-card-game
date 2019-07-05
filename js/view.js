@@ -7,11 +7,13 @@ class View {
 
         //$.subscribe("model.initialShuffle", this.shuffle.bind(this))
 
-        $.subscribe("view.clickCarta", this.clickCarta.bind(this)) // vai mudar para op controller
+        //$.subscribe("view.clickCarta", this.clickCarta.bind(this)) // vai mudar para op controller
         //$.subscribe("view.notify", this.notify.bind(this))
 
         $.subscribe("controller.cardDrawnToMesaVirada", this.appendCard.bind(this))
         $.subscribe("controller.allCardsDrawn", this.shuffle.bind(this))
+
+        $.subscribe("view.shuffle", this.shuffle.bind(this))
         $.subscribe("view.shuffleDone", this.spreadAll.bind(this))
 
         this.buttonBindregister(this)
@@ -91,14 +93,11 @@ class View {
     }
 
     spreadAll(event, idx) {
-        //console.info('spreadAll', idx)
-        if (idx == 9) {
-            this.cards.forEach(function (o, e) {
-                setTimeout(function () {
-                    this.spread(o, e);
-                }.bind(this), e * 150)
-            }.bind(this))
-        }
+        this.cards.forEach(function (o, e) {
+            setTimeout(function () {
+                this.spread(o, e);
+            }.bind(this), e * 150)
+        }.bind(this))
     }
 
     spread(target, idx) {
@@ -143,7 +142,6 @@ class View {
                 o.addClass("deck" + deck)
                 setTimeout(function () {
                     o.removeClass("deck" + deck)
-                    $.publish('view.shuffleDone', e)
                 }, e * 100)
             }, e * 100)
         })
