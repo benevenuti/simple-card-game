@@ -166,9 +166,10 @@ class View {
 
     toggleFlip(target) {
             if (target.hasClass("flip-card-desvirada"))
-                this.flip(target)
-            else 
                 this.unflip(target)
+            else
+                this.flip(target) 
+                
     }
 
     /*notify(e, model) {
